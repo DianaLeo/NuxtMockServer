@@ -1,0 +1,1409 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "payment-connector-service (Fri, 21 Jun 2024 12:51:24 GMT)",
+    "version": "0.0.1-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "https://platform-gateway.rocketship.cash/payment-service",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "External Telegram Wallet Pay API",
+      "description": "com.lis.platform.integration.payment.controller.telegram"
+    },
+    {
+      "name": "Crypto payments related API",
+      "description": "com.lis.platform.integration.payment.controller.CryptoPaymentController"
+    },
+    {
+      "name": "Cobo Callback",
+      "description": "com.lis.platform.integration.payment.controller.cobo"
+    },
+    {
+      "name": "Wallet transaction api",
+      "description": "com.lis.platform.integration.payment.controller.transaction.WalletTransactionController"
+    },
+    {
+      "name": "FireBlocks API",
+      "description": "com.lis.platform.integration.payment.controller.fireblocks"
+    },
+    {
+      "name": "Coinspaid API",
+      "description": "com.lis.platform.integration.payment.controller.coinspaid"
+    },
+    {
+      "name": "Frontend Crypto payments related API",
+      "description": "com.lis.platform.integration.payment.controller.frontend.FrontendCryptoPaymentController"
+    },
+    {
+      "name": "PaymentIQ session API",
+      "description": "com.lis.platform.integration.payment.controller.paymentiq"
+    },
+    {
+      "name": "PaymentIQ API",
+      "description": "com.lis.platform.integration.payment.controller.paymentiq"
+    },
+    {
+      "name": "Internal Telegram Wallet Pay API",
+      "description": "com.lis.platform.integration.payment.controller.telegram"
+    }
+  ],
+  "paths": {
+    "/internal/new-brand/create-db": {
+      "post": {
+        "tags": ["new-brand-controller"],
+        "operationId": "createDb",
+        "parameters": [
+          {
+            "name": "api-create-auth-key",
+            "in": "header",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DbCredentialsXto" }
+            }
+          },
+          "required": true
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/transactions/wallet": {
+      "post": {
+        "tags": ["Wallet transaction api", "transaction"],
+        "summary": "Add transaction",
+        "description": "Add wallet transaction",
+        "operationId": "addTransaction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WalletTransactionXto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "In case of successfully added transaction",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletTransactionResponseXto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication unsuccessful" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/transactions/wallet/v2": {
+      "post": {
+        "tags": ["Wallet transaction api", "transaction"],
+        "summary": "Add transaction",
+        "description": "Add wallet transaction",
+        "operationId": "addTransactionV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WalletTransactionXto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "In case of successfully added transaction",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletTransactionResponseXto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication unsuccessful" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/transactions/wallet/v2/status-transaction": {
+      "post": {
+        "tags": ["Wallet transaction api", "transaction"],
+        "summary": "Update transaction status",
+        "description": "Updates status of an existing transaction.",
+        "operationId": "statusTransactionV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WalletTransactionStatusRequestXto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "In case of successfully committed transaction",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletTransactionResponseXto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication unsuccessful" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/transactions/wallet/status-transaction": {
+      "post": {
+        "tags": ["Wallet transaction api", "transaction"],
+        "summary": "Update transaction status",
+        "description": "Updates status of an existing transaction.",
+        "operationId": "statusTransaction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WalletTransactionStatusRequestXto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "In case of successfully committed transaction",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletTransactionResponseXto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication unsuccessful" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/telegram/walletpay/orders": {
+      "post": {
+        "tags": ["telegram", "Internal Telegram Wallet Pay API"],
+        "summary": "Creates a Telegram Order",
+        "description": "Create a TG Wallet order to buy crypto",
+        "operationId": "createTelegramOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TelegramOrderRequestXto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Returns an Order description",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelegramOrderResponseXto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication unsuccessful" },
+          "400": { "description": "In case of invalid payload" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/telegram/external/walletpay/webhook": {
+      "post": {
+        "tags": ["External Telegram Wallet Pay API", "telegram"],
+        "summary": "Callback endpoint",
+        "description": "Process webhook events sent by Telegram Wallet Pay",
+        "operationId": "callback",
+        "parameters": [
+          {
+            "name": "WalletPay-Timestamp",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "WalletPay-Signature",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "string" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Always returns code 200, in case of error the reason is present in the response"
+          }
+        }
+      }
+    },
+    "/api/payment-iq/{brandId}/verifyuser": {
+      "post": {
+        "tags": ["PaymentIQ API", "transaction"],
+        "summary": "PaymentIQ verify user callback",
+        "description": "This method is called by PaymentIQ to verify that a user is properly authenticated and retrieve\nuser data like name, address, birth-date etc. The user data is needed internally by PaymentIQ\nfor various fraud checks and also to enrich the data sent to the Payment Provider.",
+        "operationId": "verifyUser",
+        "parameters": [
+          {
+            "name": "brandId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VerifyUserRequestXto" }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Signature validation failed",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/VerifyUserResponseXto" }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed or invalid request",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/VerifyUserResponseXto" }
+              }
+            }
+          },
+          "200": {
+            "description": "If the callback was processed successfully",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/VerifyUserResponseXto" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payment-iq/{brandId}/transfer": {
+      "post": {
+        "tags": ["PaymentIQ API", "transaction"],
+        "summary": "PaymentIQ transfer callback",
+        "description": "This method is called by PaymentIQ after a successfully processed transaction to credit (increase)\nor debit (decrease) a user's account balance. Note:\nThe Operator Platform must always accept a transfer request,\neven if it results in a negative user balance because the payment transaction has already\nbeen processed by the payment provider.",
+        "operationId": "transfer",
+        "parameters": [
+          {
+            "name": "brandId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TransferRequestXto" }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Signature validation failed",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/TransferResponseXto" }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed or invalid request",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/TransferResponseXto" }
+              }
+            }
+          },
+          "200": {
+            "description": "If the callback was processed successfully",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/TransferResponseXto" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payment-iq/{brandId}/cancel": {
+      "post": {
+        "tags": ["PaymentIQ API", "transaction"],
+        "summary": "PaymentIQ cancel callback",
+        "description": "This method is called by PaymentIQ after a failed transaction to cancel the previous\nauthorize request, i.e. the Operator should release any reserved money from the user's account.",
+        "operationId": "cancel",
+        "parameters": [
+          {
+            "name": "brandId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CancelRequestXto" }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Signature validation failed",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CancelResponseXto" }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed or invalid request",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CancelResponseXto" }
+              }
+            }
+          },
+          "200": {
+            "description": "If the callback was processed successfully",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CancelResponseXto" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payment-iq/{brandId}/authorize": {
+      "post": {
+        "tags": ["PaymentIQ API", "transaction"],
+        "summary": "PaymentIQ authorize transaction callback",
+        "description": "This method is called by PaymentIQ so the Operator Platform can authorize a payment before it is getting processed.\nThe Operator Platform should verify that the user is allowed to process and also reserve amount for future debit\nand check that the user account will not be over debited. If the Operator Platform response is success,\nthen PaymentIQ will continue with processing of the payment transaction. If not, then PaymentIQ\nwill decline the transaction with the status code returned by the Operator Platform.",
+        "operationId": "authorize",
+        "parameters": [
+          {
+            "name": "brandId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthorizeRequestXto" }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Signature validation failed",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/AuthorizeResponseXto" }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed or invalid request",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/AuthorizeResponseXto" }
+              }
+            }
+          },
+          "200": {
+            "description": "If the callback was processed successfully",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/AuthorizeResponseXto" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/frontend/crypto/address": {
+      "post": {
+        "tags": ["address", "Frontend Crypto payments related API"],
+        "summary": "Get crypto deposit address",
+        "description": "Get crypto payment address",
+        "operationId": "getPaymentAddress_Old",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrontendPaymentAddressRequestXto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "In case of successfully returned address",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          },
+          "401": { "description": "Authentication unsuccessful" },
+          "400": { "description": "In case of invalid payload" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/frontend/crypto/address-new": {
+      "post": {
+        "tags": ["address", "Frontend Crypto payments related API"],
+        "summary": "Get crypto deposit address",
+        "description": "Get crypto payment address and tag",
+        "operationId": "getPaymentAddress",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrontendPaymentAddressRequestXto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "In case of successfully returned address, the tag is optional",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentAddressResponseXto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication unsuccessful" },
+          "400": { "description": "In case of invalid payload" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/fireblocks/callback": {
+      "post": {
+        "tags": ["FireBlocks API", "transaction"],
+        "summary": "Fireblocks webhook processor",
+        "description": "Fireblocks will send transaction events to this endpoint",
+        "operationId": "webhook",
+        "parameters": [
+          {
+            "name": "fireblocks-signature",
+            "in": "header",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "string" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Processing succeeded or event was swallowed to avoid resending",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "401": {
+            "description": "Signature validation failed",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "400": {
+            "description": "Malformed or invalid request",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    },
+    "/api/currencies/rates/historical": {
+      "post": {
+        "tags": ["currency", "Currencies api"],
+        "summary": "rate between sourceCurrency and targetCurrency at given time",
+        "description": "Returns rate between sourceCurrency and targetCurrency at given moment of time if it exists or Zero otherwise",
+        "operationId": "getCurrencyRateAtTime",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CurrencyRatesRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "number" } } }
+          }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/crypto/withdraw": {
+      "post": {
+        "tags": ["Crypto payments related API", "withdraw"],
+        "summary": "Performs a crypto withdraw",
+        "description": "Send crypto money to the specified address",
+        "operationId": "withdraw",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CryptoWithdrawRequestXto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "In case of successful or failed withdraw, true/false in the response body indicates of transaction status",
+            "content": { "*/*": { "schema": { "type": "boolean" } } }
+          },
+          "401": { "description": "Authentication unsuccessful" },
+          "400": { "description": "In case of invalid payload" }
+        },
+        "deprecated": true,
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/crypto/v2/withdraw": {
+      "post": {
+        "tags": ["Crypto payments related API", "withdraw"],
+        "summary": "Performs a crypto withdraw",
+        "description": "Send crypto money to the specified address. Please note that invoking this endpoint will create a transaction with status REQUESTED, which is a subject to approval process (manual or automatic). Once its is approved it is being sent to the payment provider, configured for that currency. For currencies with multiple networks - the network parameter must be supplied.",
+        "operationId": "withdrawV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CryptoWithdrawRequestXto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": { "description": "In case of successfully initiated withdrawal" },
+          "401": { "description": "Authentication unsuccessful" },
+          "400": { "description": "In case of invalid payload" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/crypto/invoices": {
+      "post": {
+        "tags": ["invoice", "Crypto payments related API"],
+        "summary": "Creates an invoice",
+        "description": "Generate a new invoice to buy a sweepstakes bundle",
+        "operationId": "createInvoice",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/InvoiceRequestXto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Returns an invoice URL",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/InvoiceResponseXto" }
+              }
+            }
+          },
+          "401": { "description": "Authentication unsuccessful" },
+          "400": { "description": "In case of invalid payload" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/crypto/address": {
+      "post": {
+        "tags": ["address", "Crypto payments related API"],
+        "summary": "Get crypto deposit address",
+        "description": "Get crypto payment address",
+        "operationId": "getPaymentAddress_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PaymentAddressRequestXto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "In case of successfully returned address",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentAddressResponseXto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication unsuccessful" },
+          "400": { "description": "In case of invalid payload" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/coinspaid/callback": {
+      "post": {
+        "tags": ["Coinspaid API", "transaction"],
+        "summary": "Callback endpoint",
+        "description": "Endpoint, called by CoinsPaid to notify us about transactions",
+        "operationId": "callback_1",
+        "parameters": [
+          {
+            "name": "X-Processing-Signature",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "X-Processing-Key",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "string" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Always returns code 200, in case of error the reason is present in the response",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/api/cobo/callback/{brandId}": {
+      "post": {
+        "tags": ["Cobo Callback", "transaction"],
+        "summary": "Cobo callback handler",
+        "description": "Deposit and withdrawal transaction updates handler",
+        "operationId": "handle",
+        "parameters": [
+          {
+            "name": "brandId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "Biz-Timestamp",
+            "in": "header",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "Biz-Resp-Signature",
+            "in": "header",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "string" } } },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Signature validation failed",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          },
+          "400": {
+            "description": "Malformed or invalid request",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          },
+          "200": {
+            "description": "Success or event swallowed to avoid resending",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/api/paymentiq/session": {
+      "get": {
+        "tags": ["PaymentIQ session API", "transaction"],
+        "summary": "Get session id for payment iq transaction",
+        "description": "This method is called by our system to get session id (uuid) which will be send to\npaymentIQ. They will send it back with verifyUser callback which will allow us\nto check that the process is initiated by us.",
+        "operationId": "sessionId",
+        "parameters": [
+          {
+            "name": "cid",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Signature validation failed",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/SessionDataXto" } }
+            }
+          },
+          "400": {
+            "description": "Malformed or invalid request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/SessionDataXto" } }
+            }
+          },
+          "200": {
+            "description": "If the callback was processed successfully",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/SessionDataXto" } }
+            }
+          }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/frontend/crypto/addresses": {
+      "get": {
+        "tags": ["addresses", "Frontend Crypto payments related API"],
+        "summary": "Get all crypto deposit address",
+        "description": "Get all crypto deposit address in the format: BTC:btcaddr,BNB:binanceAddress;addressTag",
+        "operationId": "getAllPaymentAddresses",
+        "responses": {
+          "200": {
+            "description": "In case of successfully returned addresses",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          },
+          "401": { "description": "Authentication unsuccessful" },
+          "400": { "description": "In case of invalid payload" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/crypto/supported-currencies": {
+      "get": {
+        "tags": ["Crypto payments related API", "currencies"],
+        "summary": "Gets list of currencies with their supported providers and provider limits",
+        "description": "Gets list of supported currencies per provider",
+        "operationId": "supportedCurrencies",
+        "responses": {
+          "401": { "description": "Authentication unsuccessful" },
+          "400": { "description": "In case of invalid payload" },
+          "200": {
+            "description": "Returns list of supported currency",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/CurrencySupportedProviders"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/crypto/supported-currencies-v2": {
+      "get": {
+        "tags": ["Crypto payments related API", "currencies"],
+        "summary": "Gets list of currencies with their supported providers and provider limits",
+        "description": "Gets list of supported currencies per provider",
+        "operationId": "supportedCurrenciesV2",
+        "responses": {
+          "401": { "description": "Authentication unsuccessful" },
+          "400": { "description": "In case of invalid payload" },
+          "200": {
+            "description": "Returns list of supported currency",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/CurrencySupportedProvidersV2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/crypto/currency-network-limits/{providerType}": {
+      "get": {
+        "tags": ["Crypto payments related API", "limits"],
+        "summary": "Get currency-per-network transfer limits",
+        "description": "Get currency-per-network transfer limits",
+        "operationId": "getCurrencyNetworkLimits",
+        "parameters": [
+          {
+            "name": "providerType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["COINSPAID", "FIRE_BLOCKS", "PAYMENT_IQ", "COBO", "TG_WALLET"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "In case of successfully returned address",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrencyNetworkLimitsResponseXto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication unsuccessful" },
+          "400": { "description": "In case of invalid payload" }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/api/crypto/currencies-networks": {
+      "get": {
+        "tags": ["networks", "Crypto payments related API"],
+        "summary": "Get per-currency possible networks",
+        "description": "Get the possible networks",
+        "operationId": "getCurrenciesNetworks",
+        "responses": {
+          "401": { "description": "Authentication unsuccessful" },
+          "200": {
+            "description": "In case of successfully returned networks",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CurrencyNetworksXto" }
+              }
+            }
+          },
+          "400": { "description": "In case of invalid payload" }
+        },
+        "deprecated": true,
+        "security": [{ "bearer-key": [] }]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DbCredentialsXto": {
+        "type": "object",
+        "properties": {
+          "host": { "type": "string" },
+          "port": { "type": "integer", "format": "int32" },
+          "databaseName": { "type": "string" },
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "FeeXto": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["PROVIDER", "MINING"] },
+          "amount": { "type": "number" }
+        }
+      },
+      "WalletTransactionXto": {
+        "required": [
+          "amount",
+          "currencyCode",
+          "initiatedBy",
+          "playerId",
+          "source",
+          "status",
+          "transactionTime"
+        ],
+        "type": "object",
+        "properties": {
+          "playerId": {
+            "type": "string",
+            "description": "System-wide player id",
+            "example": "10210000011"
+          },
+          "amount": {
+            "minimum": 0.0,
+            "exclusiveMinimum": true,
+            "type": "number",
+            "description": "The amount of the transaction",
+            "example": 23.45
+          },
+          "source": {
+            "type": "string",
+            "description": "The source of transaction. Possible values are: DEPOSIT, WITHDRAWAL, MANUAL_DEPOSIT, MANUAL_WITHDRAWAL",
+            "example": "DEPOSIT",
+            "enum": ["DEPOSIT", "WITHDRAWAL", "MANUAL_DEPOSIT", "MANUAL_WITHDRAWAL"]
+          },
+          "currencyCode": {
+            "pattern": "[a-zA-Z]{3,4}",
+            "type": "string",
+            "description": "Three letter currency code",
+            "example": "EUR"
+          },
+          "externalTransactionId": {
+            "type": "string",
+            "description": "Id of the transaction in the external system - e.g. PSP, etc.",
+            "example": "123456789"
+          },
+          "targetPlayerCurrency": { "type": "string", "example": "BTC" },
+          "transactionTime": {
+            "type": "string",
+            "description": "Time when the transaction happened",
+            "format": "date-time",
+            "example": "2021-03-10T12:15:11.540838+02:00"
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional text, providing additional details about the transaction",
+            "example": "Some optional text"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Any additional metadata",
+            "example": {
+              "providerTransactionId": "41ecc3ad-b181-4235-bf9d-acf0a7ad9730",
+              "paymentMethod": "VISA",
+              "processor": "Safecharge"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Initial status of the transaction",
+            "example": "INITIATED",
+            "enum": [
+              "REQUESTED",
+              "REVIEW",
+              "APPROVED",
+              "REJECTED",
+              "CANCELED",
+              "INITIATED",
+              "PAID",
+              "DECLINED",
+              "EXPIRED",
+              "ERROR",
+              "PENDING_REPROCESS"
+            ]
+          },
+          "providerStatus": {
+            "type": "string",
+            "description": "Status as it came from provider",
+            "example": "not_confirmed"
+          },
+          "senderAddress": {
+            "type": "string",
+            "description": "Sender of the transaction for example crypto wallet address ot credit card BIN",
+            "example": "2NCgbXs28VWwmDW92YsqqLPPrsgMDKpt2fK"
+          },
+          "recipientAddress": {
+            "type": "string",
+            "description": "Receiver of the transaction for example crypto wallet address ot credit card BIN",
+            "example": "2NCgbXs28VWwmDW92YsqqLPPrsgMDKpt2fK"
+          },
+          "processor": { "type": "string", "example": "Safecharge" },
+          "subProcessor": { "type": "string", "example": "SubProcessor" },
+          "method": { "type": "string", "example": "VISA" },
+          "subMethod": { "type": "string", "example": "SubMethod" },
+          "initiatedBy": {
+            "type": "string",
+            "example": "PROVIDER",
+            "enum": ["PROVIDER", "SYSTEM", "BO_OPERATOR", "CUSTOMER"]
+          },
+          "providerCallback": { "type": "string", "example": "{amount=10, userId=101}" },
+          "boUserId": {
+            "type": "string",
+            "example": "dc499c69-4857-42a4-a29e-3e406b8c88fb"
+          },
+          "fees": { "type": "array", "items": { "$ref": "#/components/schemas/FeeXto" } }
+        }
+      },
+      "WalletTransactionResponseXto": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "example": "3fbb7602-5970-11eb-ae93-0242ac130002"
+          },
+          "cid": { "type": "string", "example": "20011000001" },
+          "systemTimestamp": {
+            "type": "string",
+            "description": "The moment when transaction is inserted in database",
+            "format": "date-time",
+            "example": "2021-03-10T12:15:11.540838+02:00"
+          },
+          "currentBalance": { "type": "number", "example": 123.45 }
+        }
+      },
+      "WalletTransactionStatusRequestXto": {
+        "required": ["initiatedBy", "status"],
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "description": "Platform transaction id. Either transactionId or externalTransactionId must be provided",
+            "example": "3fbb7602-5970-11eb-ae93-0242ac130002"
+          },
+          "externalTransactionId": {
+            "type": "string",
+            "description": "External system transaction id. Either transactionId or externalTransactionId must be provided",
+            "example": "6f3b7602-5972-f1eb-1es3-0743ac13010g"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the transaction",
+            "example": "CANCELED",
+            "enum": [
+              "REQUESTED",
+              "REVIEW",
+              "APPROVED",
+              "REJECTED",
+              "CANCELED",
+              "INITIATED",
+              "PAID",
+              "DECLINED",
+              "EXPIRED",
+              "ERROR",
+              "PENDING_REPROCESS"
+            ]
+          },
+          "providerStatus": {
+            "type": "string",
+            "description": "Status as it came from provider",
+            "example": "not_confirmed"
+          },
+          "initiatedBy": {
+            "type": "string",
+            "description": "Initiated by",
+            "example": "PROVIDER",
+            "enum": ["PROVIDER", "SYSTEM", "BO_OPERATOR", "CUSTOMER"]
+          },
+          "note": {
+            "type": "string",
+            "description": "Note as sent by provider",
+            "example": "please tell me password"
+          }
+        }
+      },
+      "TelegramOrderRequestXto": {
+        "required": [
+          "amount",
+          "currency",
+          "description",
+          "internalTransactionId",
+          "playerId",
+          "telegramUserId"
+        ],
+        "type": "object",
+        "properties": {
+          "currency": { "type": "string" },
+          "amount": { "type": "number" },
+          "description": { "type": "string" },
+          "successReturnUrl": { "type": "string" },
+          "failReturnUrl": { "type": "string" },
+          "timeoutSeconds": { "type": "integer", "format": "int32" },
+          "telegramUserId": { "type": "integer", "format": "int64" },
+          "playerId": { "type": "string" },
+          "internalTransactionId": { "type": "string" }
+        }
+      },
+      "TelegramOrderResponseXto": {
+        "required": [
+          "createdDateTime",
+          "directPayLink",
+          "expirationDateTime",
+          "id",
+          "number",
+          "payLink",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "type": "string" },
+          "number": { "type": "string" },
+          "createdDateTime": { "type": "string", "format": "date-time" },
+          "expirationDateTime": { "type": "string", "format": "date-time" },
+          "payLink": { "type": "string" },
+          "directPayLink": { "type": "string" }
+        }
+      },
+      "VerifyUserRequestXto": {
+        "type": "object",
+        "properties": { "sessionId": { "type": "string" }, "userId": { "type": "string" } }
+      },
+      "VerifyUserAttributesXto": {
+        "type": "object",
+        "properties": {
+          "allow_manual_payout": { "type": "boolean" },
+          "affiliate_id": { "type": "string" },
+          "bonusCode": { "type": "string" }
+        }
+      },
+      "VerifyUserResponseXto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "success": { "type": "boolean" },
+          "userCat": { "type": "string" },
+          "kycStatus": { "type": "string" },
+          "sex": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "street": { "type": "string" },
+          "city": { "type": "string" },
+          "state": { "type": "string" },
+          "zip": { "type": "string" },
+          "country": { "type": "string" },
+          "email": { "type": "string" },
+          "dob": { "type": "string" },
+          "balance": { "type": "number" },
+          "mobile": { "type": "string" },
+          "balanceCy": { "type": "string" },
+          "locale": { "type": "string" },
+          "attributes": { "$ref": "#/components/schemas/VerifyUserAttributesXto" },
+          "errCode": { "type": "string" },
+          "errMessage": { "type": "string" }
+        }
+      },
+      "TransferRequestXto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "txAmount": { "type": "string" },
+          "txAmountCy": { "type": "string" },
+          "txPspAmount": { "type": "string" },
+          "txPspAmountCy": { "type": "string" },
+          "fee": { "type": "string" },
+          "feeCy": { "type": "string" },
+          "txId": { "type": "string" },
+          "txTypeId": { "type": "string" },
+          "txName": { "type": "string" },
+          "provider": { "type": "string" },
+          "txRefId": { "type": "string" },
+          "attributes": { "type": "object", "additionalProperties": { "type": "object" } }
+        }
+      },
+      "TransferResponseXto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "success": { "type": "boolean" },
+          "txId": { "type": "string" },
+          "errCode": { "type": "string" },
+          "errMsg": { "type": "string" }
+        }
+      },
+      "CancelRequestXto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "authCode": { "type": "string" },
+          "txAmount": { "type": "string" },
+          "txAmountCy": { "type": "string" },
+          "txId": { "type": "string" },
+          "txTypeId": { "type": "string" },
+          "txName": { "type": "string" },
+          "provider": { "type": "string" }
+        }
+      },
+      "CancelResponseXto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "success": { "type": "boolean" },
+          "errCode": { "type": "string" },
+          "errMsg": { "type": "string" }
+        }
+      },
+      "AuthorizeRequestXto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "txAmount": { "type": "string" },
+          "txAmountCy": { "type": "string" },
+          "txId": { "type": "string" },
+          "txTypeId": { "type": "string" },
+          "txName": { "type": "string" },
+          "provider": { "type": "string" },
+          "attributes": { "type": "object", "additionalProperties": { "type": "object" } }
+        }
+      },
+      "AuthorizeResponseXto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "success": { "type": "boolean" },
+          "authCode": { "type": "string" },
+          "errCode": { "type": "string" },
+          "errMsg": { "type": "string" }
+        }
+      },
+      "FrontendPaymentAddressRequestXto": {
+        "required": ["currency"],
+        "type": "object",
+        "properties": { "currency": { "type": "string" } }
+      },
+      "PaymentAddressResponseXto": {
+        "type": "object",
+        "properties": { "address": { "type": "string" }, "tag": { "type": "string" } }
+      },
+      "CurrencyRatesRequest": {
+        "type": "object",
+        "properties": {
+          "sourceCurrency": { "type": "string" },
+          "targetCurrency": { "type": "string" },
+          "time": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CryptoWithdrawRequestXto": {
+        "required": ["address", "amount", "currency", "userId"],
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "currency": { "type": "string" },
+          "address": { "type": "string" },
+          "tag": { "type": "string" },
+          "amount": { "type": "number" },
+          "transactionId": { "type": "string" },
+          "network": { "type": "string" }
+        }
+      },
+      "InvoiceRequestXto": {
+        "type": "object",
+        "properties": {
+          "invoiceId": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "currency": { "type": "string" },
+          "amount": { "type": "number" },
+          "userId": { "type": "string" },
+          "userEmail": { "type": "string" },
+          "timer": { "type": "boolean" },
+          "urlSuccess": { "type": "string" },
+          "urlFailed": { "type": "string" }
+        }
+      },
+      "InvoiceResponseXto": {
+        "type": "object",
+        "properties": { "invoiceId": { "type": "string" }, "url": { "type": "string" } }
+      },
+      "PaymentAddressRequestXto": {
+        "required": ["currency", "userId"],
+        "type": "object",
+        "properties": { "userId": { "type": "string" }, "currency": { "type": "string" } }
+      },
+      "SessionDataXto": {
+        "type": "object",
+        "properties": {
+          "merchantId": { "type": "string" },
+          "sessionId": { "type": "string" }
+        }
+      },
+      "CurrencySupportedProviders": {
+        "type": "object",
+        "properties": {
+          "baseCurrency": { "type": "string" },
+          "supportedProviders": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["COINSPAID", "FIRE_BLOCKS", "PAYMENT_IQ", "COBO", "TG_WALLET"]
+            }
+          }
+        }
+      },
+      "CurrencySupportedProvidersV2": {
+        "type": "object",
+        "properties": {
+          "baseCurrency": { "type": "string" },
+          "defaultCurrencyDisplayName": { "type": "string" },
+          "supportedProviders": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/components/schemas/LimitsXto" }
+          }
+        }
+      },
+      "LimitsXto": {
+        "type": "object",
+        "properties": {
+          "depositMinAmount": { "type": "number" },
+          "withdrawalMinAmount": { "type": "number" }
+        }
+      },
+      "CurrencyLimitsXto": {
+        "type": "object",
+        "properties": {
+          "defaultLimits": { "$ref": "#/components/schemas/LimitsXto" },
+          "networkLimits": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/components/schemas/LimitsXto" }
+          }
+        }
+      },
+      "CurrencyNetworkLimitsResponseXto": {
+        "type": "object",
+        "properties": {
+          "limits": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/components/schemas/CurrencyLimitsXto" }
+          }
+        }
+      },
+      "CurrencyNetworkXto": {
+        "type": "object",
+        "properties": { "code": { "type": "string" }, "name": { "type": "string" } }
+      },
+      "CurrencyNetworksXto": {
+        "type": "object",
+        "properties": {
+          "currency": { "type": "string" },
+          "networks": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CurrencyNetworkXto" }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer-key": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
+    }
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "auth-service (Tue, 28 May 2024 12:33:49 GMT)",
+    "version": "0.0.1-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "https://platform-gateway.rocketship.cash/auth-service",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "service-account",
+      "description": "com.lis.platform.integration.auth.controller.ServiceAccountController"
+    }
+  ],
+  "paths": {
+    "/service-account/renew": {
+      "post": {
+        "tags": ["renew", "service-account"],
+        "summary": "Service account token renew",
+        "description": "   The token provided in the \"Authorization\" header will be refreshed.\n",
+        "operationId": "renew",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Will return refreshed service account token.",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/service-account/login": {
+      "post": {
+        "tags": ["login", "service-account"],
+        "summary": "Service account login",
+        "description": "    Service account login will provide a token which can be used by any platform s2s client to access\n    platform functionality and act on behalf of the customers.\n",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServiceAccountCredentialsXto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Will return a service account token.",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/internal/new-brand/create-db": {
+      "post": {
+        "tags": ["new-brand-controller"],
+        "operationId": "createDb",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DbCredentialsXto" }
+            }
+          },
+          "required": true
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/healthcheck": {
+      "get": {
+        "tags": ["health-controller"],
+        "operationId": "ok",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ServiceAccountCredentialsXto": {
+        "required": ["accountId", "brandId", "secret"],
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string",
+            "description": "id of the brand",
+            "example": "supremo"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "id of the service account",
+            "example": "supremo"
+          },
+          "secret": {
+            "type": "string",
+            "description": "secret ot the service account",
+            "example": "ffdsf234wfds"
+          }
+        }
+      },
+      "DbCredentialsXto": {
+        "type": "object",
+        "properties": {
+          "host": { "type": "string" },
+          "port": { "type": "integer", "format": "int32" },
+          "databaseName": { "type": "string" },
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer-key": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
+    }
+  }
+}

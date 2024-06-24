@@ -1,10 +1,75 @@
 {
   "posts": [
-    { "id": 1, "title": "Hello World", "content": "This is a mock post.", "views": 100  },
-    { "id": 2, "title": "Nuxt 3 Rocks", "content": "This is another mock post.", "views": 200 }
+    {
+      "id": "1",
+      "title": "Hello World",
+      "content": "This is a mock post.",
+      "views": 100
+    },
+    {
+      "id": "2",
+      "title": "Nuxt 3 Rocks",
+      "content": "This is another mock post.",
+      "views": 200
+    }
   ],
   "comments": [
-    { "id": "1", "text": "a comment about post 1", "postId": "1" },
-    { "id": "2", "text": "another comment about post 1", "postId": "1" }
+    {
+      "id": "1",
+      "text": "a comment about post 1",
+      "postId": "1"
+    },
+    {
+      "id": "2",
+      "text": "another comment about post 1",
+      "postId": "1"
+    }
+  ],
+  "users": [
+    {
+      "freeBets": ["string"],
+      "address": "string",
+      "phoneNumber": "string",
+      "city": "string",
+      "country": "string",
+      "countryISO3": "string",
+      "postalCode": "string",
+      "phoneCode": "string",
+      "customerId": "string",
+      "firstName": "string",
+      "lastName": "string",
+      "email": "string",
+      "dateOfBirth": "2024-06-24T04:58:01.623Z",
+      "accountPreferences": {
+        "zoneId": "Pacific/Midway",
+        "languageCode": "en",
+        "preferredFiatCurrency": "USD",
+        "preferredGameLaunchCurrency": "USD",
+        "hidden": true
+      },
+      "communicationsVerified": true,
+      "balances": [
+        {
+          "currency": "string",
+          "currencyPrecision": 0,
+          "balance": 0,
+          "bonusBalance": 0,
+          "vaultBalance": 0
+        }
+      ],
+      "tokenRenewUrl": "string",
+      "currency": "string",
+      "mfaLogin": true,
+      "mfaWithdrawal": true,
+      "mfaStatus": "NOT_SET",
+      "mfaReferenceId": "string",
+      "remind2FA": true,
+      "kycData": {
+        "idvStatus": "NOT_VERIFIED",
+        "poaStatus": "NOT_VERIFIED",
+        "displayType": "IDV_EXPIRATION_REMINDER"
+      },
+      "loginType": "PASSWORD"
+    }
   ]
 }

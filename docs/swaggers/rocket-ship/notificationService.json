@@ -1,0 +1,251 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "notification-service (Thu, 20 Jun 2024 06:56:06 GMT)",
+    "version": "1.0.0-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "https://platform-gateway.rocketship.cash/notification-service",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/messaging/sms/send": {
+      "post": {
+        "tags": ["sms-controller"],
+        "operationId": "sendSms",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SmsMessage" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "503": {
+            "description": "Service Unavailable",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "boolean" } } }
+          }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/messaging/email/send": {
+      "post": {
+        "tags": ["email-controller"],
+        "operationId": "sendEmailWithAttachments",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": ["emailParams"],
+                "type": "object",
+                "properties": {
+                  "emailParams": { "type": "string" },
+                  "attachments": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "503": {
+            "description": "Service Unavailable",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "boolean" } } }
+          }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/internal/new-brand/create-db": {
+      "post": {
+        "tags": ["new-brand-controller"],
+        "operationId": "createDb",
+        "parameters": [
+          {
+            "name": "api-create-auth-key",
+            "in": "header",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DbCredentialsXto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "503": {
+            "description": "Service Unavailable",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "200": { "description": "OK" }
+        }
+      }
+    },
+    "/push/events": {
+      "get": {
+        "tags": ["frontend", "push"],
+        "summary": "Push notifications",
+        "description": "Server side push notifications for balance, kyc status, etc",
+        "operationId": "events",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "503": {
+            "description": "Service Unavailable",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ServerSentEventObject"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/public/push/events": {
+      "get": {
+        "tags": ["frontend", "push"],
+        "summary": "Push notifications",
+        "description": "Server side push notifications for balance, kyc status, etc",
+        "operationId": "events_1",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "503": {
+            "description": "Service Unavailable",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ServerSentEventObject"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    },
+    "/public/push/events/devcode": {
+      "get": {
+        "tags": ["frontend", "push"],
+        "summary": "Push notifications",
+        "description": "Server side push notifications for DevCode events",
+        "operationId": "eventsDevcode",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "503": {
+            "description": "Service Unavailable",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ServerSentEventObject"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-key": [] }]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SmsMessage": {
+        "type": "object",
+        "properties": { "toPhone": { "type": "string" }, "message": { "type": "string" } }
+      },
+      "DbCredentialsXto": {
+        "type": "object",
+        "properties": {
+          "host": { "type": "string" },
+          "port": { "type": "integer", "format": "int32" },
+          "databaseName": { "type": "string" },
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "ServerSentEventObject": { "type": "object" }
+    },
+    "securitySchemes": {
+      "bearer-key": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
+    }
+  }
+}
