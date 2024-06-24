@@ -1,0 +1,114 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /maintenance/filter:
+    post:
+      tags:
+        - method
+      summary: Returns maintenance objects
+      description: |
+        Returns all of the upcoming and active maintenance objects
+
+        \
+        This endpoint does NOT call GIG Core API
+      responses:
+        default:
+          $ref: "#/components/responses/filterRes"
+components:
+  schemas:
+    filterPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          end:
+            type: string
+            nullable: true
+            example: null
+          description:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                type: string
+            example:
+              en:
+                - Description
+                - in
+                - English
+          title:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                type: string
+            example:
+              en:
+                - Title
+                - in
+                - English
+          group:
+            type: array
+            items:
+              type: string
+            example:
+              - igt-maintenance
+              - yggdrasil-maintenance
+          modified:
+            type: string
+            example: "1567074915390"
+          isGroup:
+            type: boolean
+            example: true
+          id:
+            type: string
+            example: GUID
+          start:
+            type: string
+            nullable: true
+            example: null
+          active:
+            type: boolean
+            example: true
+          slug:
+            type: string
+            example: games-maintenance
+          name:
+            type: string
+            example: Games Maintenance
+  responses:
+    filterRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/filterPayload"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

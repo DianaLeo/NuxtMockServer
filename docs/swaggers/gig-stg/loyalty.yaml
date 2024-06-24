@@ -1,0 +1,437 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /loyalty/generateLevels:
+    post:
+      summary: Generate levels for an user (or until 100000 loyalty points) to show
+        all the levels (milestones)
+      responses:
+        default:
+          $ref: "#/components/responses/GenerateLevelsRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateLevelsReq"
+        required: true
+  /loyalty/globalBalance:
+    post:
+      summary: Get the loyalty points for a list of user
+      description: Gets the points for a list of users in the loyalty program
+      responses:
+        default:
+          $ref: "#/components/responses/GlobalBalanceRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GlobalBalanceReq"
+        required: true
+  /loyalty/globalProgress:
+    post:
+      summary: Get the loyalty progress for a list of user
+      description: Gets the progress for a list of users in the loyalty program
+      responses:
+        default:
+          $ref: "#/components/responses/GlobalProgressRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GlobalProgressReq"
+        required: true
+  /loyalty/history:
+    post:
+      summary: History of users loyalty points ordered by time.
+      responses:
+        default:
+          $ref: "#/components/responses/HistoryRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HistoryReq"
+        required: true
+  /loyalty/increaseWithoutRewards:
+    post:
+      tags:
+        - authMethod
+      summary: Increase the  user loyalty points
+      description: The endpoint does not grant rewards to the user if a new level is reached
+      responses:
+        default:
+          $ref: "#/components/responses/IncreaseWithoutRewardsRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IncreaseWithoutRewardsReq"
+        required: true
+  /loyalty/rank:
+    post:
+      summary: Ranking of loyalty points for n users.
+      description: null
+      responses:
+        default:
+          $ref: "#/components/responses/RankRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RankReq"
+        required: true
+  /loyalty/userProgress:
+    post:
+      summary: Get the progress of a user in the loyalty program
+      description: Gets level, position and progress of a user in the loyalty program
+      responses:
+        default:
+          $ref: "#/components/responses/UserProgressRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserProgressReq"
+        required: true
+components:
+  schemas:
+    GenerateLevelsReq:
+      type: object
+      properties:
+        userId:
+          type: number
+          description: User id of the user we want to generate the list of levels reached
+            (optional)
+          example: 10
+    GenerateLevelsRes:
+      type: array
+      items:
+        $ref: "#/components/schemas/GenerateLevelsRow"
+    GenerateLevelsRow:
+      type: object
+      properties:
+        level:
+          type: number
+          description: Level achieved in this milestone
+          example: null
+        message:
+          type: string
+          description: id of the message
+          format: uuid
+        value:
+          type: number
+          description: Loyalty points required to achieve this milestone
+          example: 1000
+        immediatePayout:
+          type: boolean
+          description: If the reward have to ve payout at the moment of reaching the
+            milestone
+          example: true
+        loopMultiplier:
+          type: number
+          description: Multiplier to increase the amount of loyalty point required
+          example: 1
+        token:
+          type: string
+          description: Reward id
+          format: uuid
+        delayPayoutDays:
+          type: string
+          description: number of days to be paid out after the user achieved the milestone
+          example: "2"
+        delayPayoutTime:
+          type: string
+          description: hour and minute to be paid out after the user achieved the milestone
+          example: 14:00
+        timezone:
+          type: string
+          description: timezone used to calculate when the user will be paid out
+          example: CET
+        payoutMessage:
+          type: string
+          description: MessageID
+          format: uuid
+        isInfinite:
+          type: boolean
+          description: Indicate if this milestone have been automatically generated
+          example: true
+    GlobalBalanceReq:
+      type: object
+      properties:
+        userIds:
+          type: array
+          items:
+            type: number
+          description: Array of user ids to fetch the points for
+          example:
+            - 1
+            - 2
+            - 3
+    GlobalBalanceRes:
+      type: array
+      items:
+        type: object
+        properties:
+          userId:
+            type: number
+          points:
+            type: number
+      example:
+        - userId: 1
+          points: 1
+        - userId: 2
+          points: 2
+        - userId: 3
+          points: 4
+    GlobalProgressReq:
+      type: object
+      properties:
+        userIds:
+          type: array
+          items:
+            type: number
+          description: Array of user ids to fetch the points for
+          example:
+            - 84
+            - 88
+            - 95
+    GlobalProgressRes:
+      type: array
+      items:
+        type: object
+        properties:
+          userId:
+            type: number
+          points:
+            type: number
+          level:
+            type: number
+            example: 200
+          pointsPreviousLevel:
+            type: number
+            example: 45000
+          pointsNextLevel:
+            type: number
+            example: 55000
+          progress:
+            type: number
+            example: 55.5
+      example:
+        - userId: 95
+          points: 534
+          level: 3
+          pointsPreviousLevel: 100
+          pointsNextLevel: -1
+          progress: 0
+        - userId: 84
+          points: 204
+          level: 2
+          pointsPreviousLevel: 100
+          pointsNextLevel: -1
+          progress: 100
+        - userId: 88
+          points: 1
+          level: 1
+          pointsPreviousLevel: 0
+          pointsNextLevel: 100
+          progress: 1
+    HistoryRes:
+      type: array
+      items:
+        $ref: "#/components/schemas/HistoryRow"
+    HistoryRow:
+      type: object
+      properties:
+        PointsGained:
+          type: number
+          description: Amount of points gained in absolute way
+          example: 10
+        pointsBefore:
+          type: number
+          example: 10
+        pointsNow:
+          type: number
+          example: 20
+        typeTransaction:
+          type: number
+          description: 0 - Credit, 1 - Debit
+          example: 0
+        info:
+          type: string
+          example: Deducted points from users
+        reason:
+          type: number
+          example: 5
+        time:
+          type: string
+          format: date-time
+        modifiedBy:
+          type: string
+          example: System
+        gained:
+          type: array
+          items:
+            $ref: "#/components/schemas/Gained"
+    Gained:
+      type: object
+      properties:
+        levelsGained:
+          type: number
+          example: 2
+          description: level gained
+        rewardsGained:
+          type: string
+          format: uuid
+          description: reward id gained on this level
+    IncreaseWithoutRewardsReq:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Amount of points
+          example: 10
+        userId:
+          type: number
+          example: 1331231
+        info:
+          type: string
+          description: Short description or reason for the increase
+          example: Lucky Friday the 13th
+    IncreaseWithoutRewardsRes:
+      type: object
+      properties:
+        res:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+    RankReq:
+      type: object
+      properties:
+        limit:
+          type: number
+          example: 500
+          description: limit users shows in the leader board
+    RankRes:
+      type: array
+      items:
+        $ref: "#/components/schemas/RankRow"
+    RankRow:
+      type: object
+      properties:
+        userId:
+          type: number
+          example: 444333
+        userName:
+          type: string
+          example: EmilioTest
+        points:
+          type: number
+          example: 50000
+        position:
+          type: number
+          example: 1
+    UserProgressReq:
+      type: object
+      properties:
+        userId:
+          type: number
+          description: User id to get the history (only for CMS)
+          example: 10
+    UserProgressRes:
+      type: object
+      properties:
+        points:
+          type: number
+          example: 50000
+        rank:
+          type: number
+          example: 1
+        level:
+          type: number
+          example: 200
+        pointsPreviousLevel:
+          type: number
+          example: 45000
+        pointsNextLevel:
+          type: number
+          example: 55000
+        progress:
+          type: number
+          example: 55.5
+  responses:
+    GenerateLevelsRes:
+      description: An ordered array by position will be retrieve with n first users
+        position and points
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GenerateLevelsRes"
+    GlobalBalanceRes:
+      description: Array of users and points for the loyalty program
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GlobalBalanceRes"
+    GlobalProgressRes:
+      description: Array of users progress for the loyalty program
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GlobalProgressRes"
+    HistoryRes:
+      description: An ordered array by position will be retrieve with n first users
+        position and points
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/HistoryRes"
+    IncreaseWithoutRewardsRes:
+      description: Returns the status of the operation
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/IncreaseWithoutRewardsRes"
+    RankRes:
+      description: An ordered array by position will be retrieve with n first users
+        position and points
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/RankRes"
+    UserProgressRes:
+      description: Information about the progress of the user in the loyalty program
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserProgressRes"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

@@ -1,0 +1,1446 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /signup/addressFinder:
+    post:
+      tags:
+        - method
+      summary: New Zealand address and postcode finder.
+      description: |
+        New Zealand address and postcode finder.
+
+        \
+        This endpoint does the following Addressfinder calls:
+        ```
+        - https://api.addressfinder.io/api/nz/address/autocomplete
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addressFinderParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/addressFinderRes"
+  openapi:
+    "0": "3"
+    "1": .
+    "2": "0"
+    "3": .
+    "4": "0"
+  info:
+    title: /signup/addressFinderMetadata
+    version: "1"
+    description: Get metadata for a given address id.
+  /signup/addressFinderMetadata:
+    post:
+      tags:
+        - method
+      summary: Get metadata for a given address id.
+      description: |
+        Get metadata for a given address id.
+
+          \
+          This endpoint does the following AddressFinder Metadata API calls:
+          ```
+          - https://api.addressfinder.io/api/nz/address/metadata
+          ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pxid:
+                  type: string
+                  example: 2-.B.11.4.43hN
+                  description: Address ID
+                domain:
+                  type: string
+                  example: gig.magic.frontend
+                  description: Address domain
+        required: true
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a:
+                    type: string
+                    example: Unit 2, 1703A State Highway 1, Warkworth 0983
+                    description: Canonical address as supplied by Land Information New Zealand or NZ
+                      Post.
+                  postal:
+                    type: string
+                    example: Unit 2, 1703A State Highway 1, RD 3, Warkworth 0983
+                    description: Associated postal address when supplied by NZ Post.
+                  building_name:
+                    type: string
+                    example: Miban Building
+                    description: Holds the building or property name.
+                  unit_type:
+                    type: string
+                    example: Flat
+                    description: Describes the category of a sub-dwelling.
+                  unit_identifier:
+                    type: string
+                    example: "1"
+                    description: Identifies a specific sub dwelling. Can be alpha, number or a
+                      combination.
+                  floor:
+                    type: string
+                    example: Level 19
+                    description: The level number and level type in a multi-story building.
+                  number:
+                    type: string
+                    example: "1234"
+                    description: The street number of the address. Also populated with the box
+                      number for PO Box type addresses.
+                  alpha:
+                    type: string
+                    example: B
+                    description: Holds the alpha component of a street number. In the address 1B
+                      High Street, B is the alpha.
+                  street:
+                    type: string
+                    example: Pūrākaunui Road
+                    description: Holds the full name of the street as supplied by Land Information
+                      New Zealand or NZ Post.
+                  street_name:
+                    type: string
+                    example: Pūrākaunui
+                    description: Holds the name of the street as supplied by Land Information New
+                      Zealand or NZ Post.
+                  post_street:
+                    type: string
+                    example: Pūrākaunui Road
+                    description: Holds the street name and type from NZ Post.
+                  post_street_name:
+                    type: string
+                    example: Purakaunui
+                    description: Holds the street name from NZ Post.
+                  street_type:
+                    type: string
+                    example: Avenue
+                    description: The type of street.
+                  street_suffix:
+                    type: string
+                    example: North
+                    description: The suffix of the street. Typically contains a compass direction.
+                  suburb:
+                    type: string
+                    example: Warkworth
+                    description: The suburb or locality of the address as assigned by Land
+                      Information New Zealand.
+                  city:
+                    type: string
+                    example: Warkworth
+                    description: The city, town or locality name as assigned by Land Information New
+                      Zealand.
+                  box_type:
+                    type: string
+                    example: PO Box
+                    description: The type of PO Box/CMB/Private Bag/Counter Delivery.
+                  lobby_name:
+                    type: string
+                    example: Fendalton
+                    description: The name of the NZ Post outlet or Agency outlet where the PO Box,
+                      Private Bag or Counter Delivery is located.
+                  rd_number:
+                    type: string
+                    example: "4"
+                    description: The rural delivery number assigned by NZ Post to a rural address.
+                  post_suburb:
+                    type: string
+                    example: Manukau
+                    description: Name of the suburb when supplied by NZ Post.
+                  mailtown:
+                    type: string
+                    example: Warkworth
+                    description: Name of the town/city when supplied by NZ Post.
+                  postcode:
+                    type: string
+                    example: "0983"
+                    description: Holds the four digit postcode.
+                  dpid:
+                    type: string
+                    example: "2668726"
+                    description: A unique reference number assigned to each delivery address by NZ
+                      Post.
+                  primary_parcel_id:
+                    type: string
+                    example: "3866475"
+                    description: The unique identifier of the portion of land associated with the
+                      selected address.
+                  aims_address_id:
+                    type: string
+                    example: "1518959"
+                    description: The unique identifier from Land Information New Zealand (LINZ).
+                  x:
+                    type: string
+                    example: "174.643199"
+                    description: Longitude coordinate (in WGS84 format).
+                  y:
+                    type: string
+                    example: "-36.426956"
+                    description: Latitude coordinate (in WGS84 format).
+                  meshblock:
+                    type: string
+                    example: "146004"
+                    description: The meshblock identifier for the requested census dataset.
+                  sa1_id:
+                    type: string
+                    example: "7000001"
+                    description: Statistical area 1
+                  sa2_id:
+                    type: string
+                    example: "7000001"
+                    description: Statistical area 2
+                  sa2:
+                    type: string
+                    example: Rangaunu Harbour
+                    description: Statistical area 2 name
+                  rural:
+                    type: boolean
+                    example: "false"
+                    description: An indicator to help determine if this address is located in a
+                      rural setting.
+                  ur:
+                    type: string
+                    example: Kaimaumau
+                    description: Urban rural name
+                  ur_id:
+                    type: string
+                    example: "1002"
+                    description: Urban rural ID
+                  iur:
+                    type: string
+                    example: Rural settlement
+                    description: Urban rural indicator name
+                  iur_id:
+                    type: string
+                    example: "21"
+                    description: Urban rural indicator ID
+                  region:
+                    type: string
+                    example: Auckland Region
+                    description: The Regional Authority in which this address exists.
+                  region_id:
+                    type: string
+                    example: "04"
+                    description: Region ID
+                  ta:
+                    type: string
+                    example: Auckland
+                    description: The Territorial Authority in which this address exists.
+                  ta_id:
+                    type: string
+                    example: "060"
+                    description: Territorial Authority ID
+                  con:
+                    type: string
+                    example: Te Hiku Constituency
+                    description: Constituency name
+                  con_id:
+                    type: string
+                    example: "0101"
+                    description: Constituency ID
+                  maoricon:
+                    type: string
+                    example: Te Hiku Maori Constituency
+                    description: Maori Constituency name
+                  maoricon_id:
+                    type: string
+                    example: "0402"
+                    description: Maori Constituency ID
+                  ward:
+                    type: string
+                    example: Waitemata and Gulf Ward
+                    description: Ward name
+                  ward_id:
+                    type: string
+                    example: "0616"
+                    description: Ward ID
+                  cb:
+                    type: string
+                    example: Te Hiku Community
+                    description: Community Board name
+                  cb_id:
+                    type: string
+                    example: "00101"
+                    description: Community Board ID
+                  tasub:
+                    type: string
+                    example: Akaroa Subdivision
+                    description: Territorial Authority Subdivision name
+                  tasub_id:
+                    type: string
+                    example: "06019"
+                    description: Territorial Authority Subdivision ID
+                  landwater:
+                    type: string
+                    example: Inlet
+                    description: Land/Water description
+                  landwater_id:
+                    type: string
+                    example: "22"
+                    description: Landwater ID
+                  address_line_1:
+                    type: string
+                    example: Unit 2
+                    description: First line of the non-suburb/city/postcode portion of the address.
+                  address_line_2:
+                    type: string
+                    example: 1703A State Highway 1
+                    description: Second line of the non-suburb/city/postcode portion of the address.
+                  pxid:
+                    type: string
+                    example: 2-.B.11.4.43hN
+                    description: Unique address identifier.
+                  success:
+                    type: boolean
+                    example: "true"
+                    description: Indicates if the request was successful or not.
+        "500":
+          description: error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    example: pxid not found
+                    description: AddressFinder Metadata API bad request
+  /signup/checkEmail:
+    post:
+      tags:
+        - method
+      summary: Checks if an email is available
+      description: |
+        Checks if an email is available
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /validate/email?ignoreExisting=false
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: test@email.com
+      responses:
+        default:
+          description: Availability status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: test@email.com
+                  isAvailable:
+                    type: boolean
+                    example: true
+  /signup/checkUsername:
+    post:
+      tags:
+        - method
+      summary: Check if a username is available
+      description: |
+        Determines whether the is username available and valid.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /validate/username?ignoreExisting=false
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: randomTestAccount
+      responses:
+        default:
+          description: Availability status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: randomTestAccount
+                  isAvailable:
+                    type: boolean
+                    example: true
+  /signup/currencies:
+    post:
+      tags:
+        - method
+      summary: Get available currencies
+      description: |
+        The endpoint lists the avaliable currencies based on the user's country.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Currencies
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/currenciesParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/currenciesRes"
+  /signup/getCountries:
+    post:
+      tags:
+        - method
+      summary: Gets countries enabled for the brand.
+      description: |
+        Gets countries enabled for the brand.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /IPWhois
+        - /Countries
+        - /Currencies
+        ```
+      responses:
+        default:
+          description: _countries_ contains the country and currency code, the phone
+            prefix, the legal age and the name of the country.
+            _currentIPCountry_ contains the geoIP country
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  countries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                          example: SE
+                        name:
+                          type: string
+                          example: Sweden
+                        phonePrefix:
+                          type: string
+                          example: "+123"
+                        currency:
+                          type: string
+                          example: SEK
+                        legalAge:
+                          type: number
+                          example: 18
+                  currentIPCountry:
+                    type: string
+                    example: SE
+  /signup/getIndustries:
+    post:
+      tags:
+        - method
+      summary: Gets the list of the possible industries.
+      description: |
+        Gets the list of the possible industries.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v1/Industries/GetIndustries
+        ```
+      responses:
+        default:
+          description: contains a list of industries with the industry id, the name of the
+            industry.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    industryId:
+                      type: integer
+                      example: "3"
+                    name:
+                      type: string
+                      example: Aboriginal public administration
+  /signup/getNationalities:
+    post:
+      tags:
+        - method
+      summary: Gets all countries regardless of whether or not they are excluded.
+      description: |
+        Gets all countries regardless of whether or not they are excluded.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Countries
+        ```
+      responses:
+        default:
+          description: contains a list of countries with the country id, the name of the
+            country, the country's alpha code 2 and its alpha code 3.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    countryId:
+                      type: integer
+                      example: "3"
+                    name:
+                      type: string
+                      example: Albania
+                    alphaCode2:
+                      type: string
+                      example: AL
+                    alphaCode3:
+                      type: string
+                      example: ALB
+  /signup/getPepCategories:
+    post:
+      tags:
+        - method
+      summary: Gets all PEP Categories
+      description: |
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/Kyc/GetPepCategories
+        ```
+      responses:
+        default:
+          description: contains a list of categories with the id and name.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pepCategoryId:
+                      type: integer
+                      example: "3"
+                    name:
+                      type: string
+                      example: Domestic
+  /signup/getPepSourceOfFunds:
+    post:
+      tags:
+        - method
+      summary: Gets all PEP sources of funds
+      description: |
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/Kyc/getPepSourceOfFunds
+        ```
+      responses:
+        default:
+          description: contains a list of fund sources with the id and name.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pepSourceOfFundsId:
+                      type: integer
+                      example: "5"
+                    name:
+                      type: string
+                      example: Employment Income
+  /signup/getPepSourceOfWealth:
+    post:
+      tags:
+        - method
+      summary: Gets all PEP sources of wealth
+      description: |
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/Kyc/getPepSourceOfWealth
+        ```
+      responses:
+        default:
+          description: contains a list of wealth sources with the id and name.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    pepSourceOfWealthId:
+                      type: integer
+                      example: "5"
+                    name:
+                      type: string
+                      example: Business Income / Earnings
+  /signup/getRegDDLists:
+    post:
+      tags:
+        - method
+      summary: Returns the default options for sign up
+      description: >
+        Returns the default options for sign up, for example the the country the
+        user is in
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /IPWhois
+
+        - /Countries
+
+        - /Currencies
+
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getRegDDListsRes"
+  /signup/getSubdivision:
+    post:
+      tags:
+        - method
+      summary: Get subdivision info
+      description: >
+        Returns the subdivisions associated with the specified country
+        alpha2Code argument.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Countries/Subdivisions
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getSubdivisionParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getSubdivisionRes"
+  /signup/isAllowed:
+    post:
+      tags:
+        - method
+      summary: Check if registration is allowed for a country
+      description: |
+        Checks if the user's country is excluded for registration or not.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /IPWhois
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/isAllowedRes"
+  /signup/occupations:
+    post:
+      tags:
+        - method
+      summary: A list of occupations
+      description: |
+        A list of occupations approved by Buenos Aires Gambling Law.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /occupations
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/occupationsParams"
+      responses:
+        default:
+          $ref: "#/components/responses/occupationsRes"
+  /signup/occupationsV2:
+    post:
+      tags:
+        - method
+      summary: A list of occupations
+      description: |
+        A list of occupations for Ontario legislation.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/occupations
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/occupationsV2Params"
+      responses:
+        default:
+          $ref: "#/components/responses/occupationsRes"
+  /signup/registerExternal:
+    post:
+      tags:
+        - method
+      summary: Register external user
+      description: |
+        Registers a new user from an external system.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /IPWhois
+        - /Countries
+        - /Currencies
+        - /v1/authentication/register/external
+        ```
+      responses:
+        "500":
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Error response
+        default:
+          $ref: "#/components/responses/registerExternalRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/registerExternalReq"
+        required: true
+  /signup/registrationTypes:
+    post:
+      tags:
+        - method
+      summary: Gets the available verification types
+      description: >
+        Gets the available verification types for the user's ip. User
+        Verification types can be whitelisted for each country.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /user/verify/registration/types
+
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/registrationTypesRes"
+  /signup/retrievePepAdditionalDetails:
+    post:
+      tags:
+        - authMethod
+      summary: Gets PEP additional details
+      description: |
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/Kyc/GetPepAdditionalDetails
+        ```
+      responses:
+        default:
+          description: contains additional details for PEP
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isPep:
+                    type: boolean
+                    example: false
+                  pepSourceOfFundsId:
+                    type: integer
+                    example: 1
+                  pepSourceOfFundsName:
+                    type: string
+                    example: Bonus
+                  pepSourceOfWealthId:
+                    type: integer
+                    example: 1
+                  pepSourceOfWealthName:
+                    type: string
+                    example: Business Income / Earnings
+                  pepOfficeOrPosition:
+                    type: string
+                    example: Ministry of Defence
+                  pepOrganizationName:
+                    type: string
+                    example: Canada Government
+                  pepCategoryId:
+                    type: integer
+                    example: 1
+                  pepCategoryName:
+                    type: string
+                    example: Domestic
+                  pepNatureOfRelationship:
+                    type: string
+                    example: Direct
+  /signup/savePepAdditionalDetails:
+    post:
+      tags:
+        - method
+      summary: This endpoint used for saving all PEP related fields in AGCO.
+      description: >
+        This endpoint used for saving all PEP related fields in AGCO.
+
+        \
+
+        When the 'isPepOrHio' is sent as 'false', we return all the rest of the parameters as 'null'.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /UserDetails/Agco/UpdatePepDetails
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/savePepAdditionalDetailsParams"
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  err:
+                    type: string
+  /signup/sendVerifyEmail:
+    post:
+      tags:
+        - method
+      summary: Sends the verify email to the given email
+      description: >
+        Sends the verify email to the given email. The endpoint always returns
+        `true` to not leak the registered user's email.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Authentication/Verify/Email/Send
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/sendVerifyEmailParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/sendVerifyEmailRes"
+  /signup/sendVerifySMS:
+    post:
+      tags:
+        - method
+      summary: Sends the verify SMS to the given mobile numner
+      description: >
+        Sends the verify SMS to the given mobile number. The endpoint always
+        returns `true` to not leak the registered user's mobile.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /v2/authentication/verify/sms/send
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/sendVerifySMSParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/sendVerifySMSRes"
+  /signup/verifyAccountV3:
+    post:
+      tags:
+        - method
+      summary: Activate a user's account
+      description: >
+        Verifies a user based on an email address. Upon successful verification,
+        it returns the IGC token.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /v2/authentication/Verify/ActivationToken/Get
+
+        - /v3/authentication/Verify/Email/
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/verifyAccountV3Params"
+        required: true
+      responses:
+        "500":
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Could not activate the account.
+        default:
+          $ref: "#/components/responses/verifyAccountV3Res"
+  /signup/verifySMSV3:
+    post:
+      tags:
+        - authMethod
+      summary: Activate a user's account using the correct mobile prefix, mobile, and
+        mobile verification code combination.
+      description: >
+        Activate a user's account using the correct mobile prefix, mobile, and
+        mobile verification code combination.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /v3/authentication/verify/sms
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mobileVerificationCode:
+                  type: string
+                  example: "12345"
+                mobilePrefix:
+                  type: string
+                  example: "+34"
+                mobile:
+                  type: string
+                  example: "676676676"
+      responses:
+        default:
+          description: Verification status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: a67a77a9-3a6e-496a-8c88-3afea17fa74e
+                  verificationStatus:
+                    type: string
+                    example: pending/complete, or an error status
+components:
+  schemas:
+    addressFinderParams:
+      type: object
+      properties:
+        search:
+          type: string
+          example: 184 William
+    addressFinderPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          address:
+            type: string
+          addressIdentifier:
+            type: string
+    currenciesParams:
+      type: object
+      properties:
+        transparentErrors:
+          type: boolean
+          nullable: true
+          example: null
+    currenciesPayload:
+      type: object
+      properties:
+        current:
+          type: string
+          example: EUR
+        list:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+              name:
+                type: string
+          example:
+            - code: EUR
+              name: Euro
+            - code: USD
+              name: US Dollar
+    getRegDDListsPayload:
+      type: object
+      properties:
+        countries:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: AL
+              name:
+                type: string
+                example: Albania
+              phonePrefix:
+                type: string
+                example: "+355"
+              currency:
+                type: string
+                example: EUR
+              legalAge:
+                type: number
+                example: 18
+        phonePrefixes:
+          type: array
+          items:
+            type: string
+            example: "+355"
+        userProfile:
+          type: object
+          properties:
+            gender:
+              type: string
+              example: M
+            country:
+              type: string
+              example: NL
+            phonePrefix:
+              type: string
+              example: "+31"
+        maxYear:
+          type: number
+          example: 2001
+    getSubdivisionParams:
+      type: object
+      properties:
+        countryCode:
+          type: string
+          example: GB
+    getSubdivisionPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          ID:
+            type: string
+            format: uuid
+            example: 4c674165-7bbf-4ba1-a20f-002d14dd459b
+          code:
+            type: string
+            example: GB-ENG
+          name:
+            type: string
+            example: England
+          code2:
+            type: string
+            example: GB-SGC
+          name2:
+            type: string
+            example: South Gloucestershire
+    isAllowedPayload:
+      type: boolean
+      example: true
+    occupationsParams:
+      type: object
+      properties:
+        lang:
+          type: string
+          example: en
+    occupationsPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          occupationId:
+            type: number
+            example: 504
+          name:
+            type: string
+            example: Accommodation, travel, tourism and related services supervisors
+    occupationsV2Params:
+      type: object
+      properties:
+        regulatorAcronym:
+          type: string
+          example: agco
+    registerExternalReq:
+      type: object
+      required:
+        - username
+        - externalPlayerId
+        - language
+        - country
+        - city
+        - firstName
+        - lastName
+        - birthDate
+        - address1
+        - postalCode
+        - gender
+      properties:
+        username:
+          type: string
+          format: LoganFilippi1541
+        email:
+          type: string
+          example: example@gig.com
+        gender:
+          type: string
+          example: F
+        firstName:
+          type: string
+          example: Logan
+        lastName:
+          type: string
+          example: Logan
+        birthDate:
+          type: string
+          example: 1992-06-06
+        postalCode:
+          type: string
+          example: S7U 5F8
+        address1:
+          type: string
+          example: Tecpaf Pass
+        address2:
+          type: string
+          example: 8 floor door 45
+        city:
+          type: string
+          example: Wabomaka
+        country:
+          type: string
+          example: MT
+        language:
+          type: string
+          example: EN
+        externalPlayerId:
+          type: string
+          example: your-custom-id-632836543
+        externalPlayerStatus:
+          type: string
+          description: The external player status
+          example: active
+        governmentId:
+          type: string
+          description: Player identification document number
+        externalPlayerSource:
+          type: string
+          example: custom source
+          description: Source where the player enrolled originally
+        isoCodeSubdivision:
+          type: string
+          example: US-CA
+        allowsNewsAndOffers:
+          type: boolean
+          default: false
+        allowsNewsAndOffersSMS:
+          type: boolean
+          default: false
+        title:
+          type: string
+          example: Mr.
+        mobilePrefix:
+          type: string
+          example: "+34"
+        mobile:
+          type: string
+          example: "123456789"
+        phonePrefix:
+          type: string
+          example: "+34"
+        phone:
+          type: string
+          example: "123456789"
+        reference:
+          type: string
+          example: random_affiliate_code
+        urlReferrer:
+          type: string
+          example: https://gig.com
+        affiliateSourceId:
+          type: string
+          description: Optional fields represents unique identifier for a particular
+            affiliate. Usually retrieved from the query string or cookie
+        affiliateClientUUID:
+          type: string
+          description: Optional field represents unique identifier for user in association
+            with the affiliate. Usually retrieved from the query string or
+            cookie
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+            - test1
+            - test2
+    registerExternalRes:
+      type: object
+      properties:
+        userId:
+          type: number
+          example: 513527
+    registrationTypesPayload:
+      type: object
+      properties:
+        countryID:
+          type: number
+          example: 157
+        verificationTypeID:
+          type: number
+          example: 1
+        verificationType:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            type:
+              type: string
+              example: SMS
+            notes:
+              type: string
+              example: Example notes
+            isLive:
+              type: boolean
+              example: true
+            usesSMS:
+              type: boolean
+              example: true
+            usesEmail:
+              type: boolean
+              example: true
+    savePepAdditionalDetailsParams:
+      type: object
+      properties:
+        pepSourceOfFundsId:
+          type: integer
+          example: 1
+        pepSourceOfWealthId:
+          type: integer
+          example: 1
+        pepOfficeOrPosition:
+          type: string
+          example: President
+        pepOrganizationName:
+          type: string
+          example: Cyprus Government
+        pepCategoryId:
+          type: integer
+          example: 1
+        pepNatureOfRelationship:
+          type: string
+          example: Direct
+        isPepOrHio:
+          type: boolean
+          example: true
+    sendVerifyEmailParams:
+      type: object
+      properties:
+        email:
+          type: string
+          example: test@test.com
+    sendVerifyEmailPayload:
+      type: boolean
+      example: true
+    sendVerifySMSPayload:
+      type: boolean
+      example: true
+    sendVerifySMSParams:
+      type: object
+      properties:
+        mobilePrefix:
+          type: string
+          example: "+123"
+        mobile:
+          type: string
+          example: "123123123"
+    verifyAccountV3Params:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@gig.com
+    verifyAccountV3Payload:
+      type: object
+      properties:
+        token:
+          type: string
+          format: uuid
+        verificationStatus:
+          type: string
+          example: Pending
+  responses:
+    addressFinderRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/addressFinderPayload"
+    currenciesRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/currenciesPayload"
+    getRegDDListsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getRegDDListsPayload"
+    getSubdivisionRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getSubdivisionPayload"
+    isAllowedRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/isAllowedPayload"
+    occupationsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/occupationsPayload"
+    registerExternalRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/registerExternalRes"
+    registrationTypesRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/registrationTypesPayload"
+    sendVerifyEmailRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/sendVerifyEmailPayload"
+    sendVerifySMSRes:
+      description: Response will always be true to avoid leaking users phone numbers
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/sendVerifySMSPayload"
+    verifyAccountV3Res:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/verifyAccountV3Payload"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

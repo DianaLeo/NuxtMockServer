@@ -1,0 +1,414 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /promotions/filter:
+    post:
+      tags:
+        - method
+      summary: Get promotions filtered
+      description: |
+        Gets promotions filtered
+
+        \
+        This endpoint does NOT call GIG Core API
+      responses:
+        default:
+          $ref: "#/components/responses/PromotionsRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PromotionsReq"
+        required: true
+  /promotions/getByCatId:
+    post:
+      tags:
+        - method
+      summary: Returns promotions by given cat id
+      description: |
+        Returns all available promotions for given cat id ordered by position
+
+        \
+        This endpoint does NOT call GIG Core API
+      responses:
+        default:
+          $ref: "#/components/responses/GetByCatIdRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetByCatIdParams"
+        required: true
+  /promotions/optIn:
+    post:
+      tags:
+        - authMethod
+      summary: Opt in a specific promotion
+      description: >
+        Opt in to a specific promotion. It is prefered to use the slug instead
+        of the name to get the promotion as the name is not unique.
+
+        The promotion must have a CTA of type Optin, and after the player has opted in he will receive the role configured in the CTA. 
+
+
+        \
+
+        This endpoint does NOT call GIG Core API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: main
+                slug:
+                  type: string
+                  example: main-1
+                cta:
+                  type: string
+                  example: Check this out today
+                lang:
+                  type: string
+                  example: en
+      responses:
+        default:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  addedRoles:
+                    type: array
+                    items:
+                      type: string
+                      example: VIP
+                  allUserRoles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: loginBonus
+                        date:
+                          type: string
+                          example: ""
+components:
+  schemas:
+    PromotionsReq:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Filter by type field
+        lobbyFilter:
+          type: string
+          description: Filter by lobby filter field
+        userName:
+          type: string
+          description: If user is provided then promotions for users logged will be fetched
+        categoryId:
+          type: string
+          description: The id of the category to get the promotions from
+    PromotionsRes:
+      type: array
+      items:
+        $ref: "#/components/schemas/Promotions"
+    GetByCatIdParams:
+      type: object
+      required:
+        - catId
+      properties:
+        catId:
+          type: string
+          example: 10a5d0b2-2bdd-43aa-97d9-ca275f55480b
+    GetByCatIdResPayload:
+      type: array
+      items:
+        $ref: "#/components/schemas/Promotions"
+    Platform:
+      type: object
+      properties:
+        device:
+          type: boolean
+          example: true
+        desktop:
+          type: boolean
+          example: false
+    CTA:
+      type: object
+      properties:
+        style:
+          type: string
+          example: green
+        type:
+          type: string
+          example: primary
+        position:
+          type: string
+          example: center
+        desktop:
+          type: string
+          example: https://kaboo.com/en/
+        mobile:
+          type: string
+          example: https://kaboo.com/en/
+        text:
+          type: string
+          example: Lorem ipsum dolor sit amet
+    Games:
+      type: object
+      properties:
+        slug:
+          type: string
+          example: action-bank
+        providerId:
+          type: string
+          example: "10924"
+    Value:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Lorem ipsum dolor sit amet
+        lang:
+          type: string
+          example: en
+        content:
+          type: object
+          example: Lorem ipsum dolor sit amet
+        help:
+          type: object
+          example: Lorem ipsum dolor sit amet
+        tnc:
+          type: string
+          example: click here
+        cta:
+          type: array
+          items:
+            $ref: "#/components/schemas/CTA"
+        background:
+          type: string
+          example: Kaboo-lens.png
+        image:
+          type: string
+          example: Kaboo-lens.png
+        games:
+          type: array
+          items:
+            $ref: "#/components/schemas/Games"
+    Promotions:
+      type: object
+      properties:
+        position:
+          type: number
+          example: 10
+        name:
+          type: string
+          example: Promotion test
+        isForLoggedIn:
+          type: boolean
+          example: true
+        isForLoggedOut:
+          type: boolean
+          example: false
+        languages:
+          type: array
+          items:
+            type: string
+            example: en
+        countries:
+          type: array
+          items:
+            type: string
+            example: GB
+        link:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: https://kaboo.com/en/
+        title:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Lorem ipsum dolor sit amet
+        subtitle:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Lorem ipsum dolor sit amet
+        markdown:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Lorem ipsum dolor sit amet
+        values:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/Value"
+        background:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Kaboo-lens.png
+        image:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Kaboo-lens.png
+        types:
+          type: array
+          items:
+            type: string
+            example: lobby
+        active:
+          type: boolean
+          example: true
+        start:
+          type: number
+          example: 1567461600000
+        expiry:
+          type: number
+          example: 1568152800000
+        segments:
+          type: array
+          items:
+            type: number
+            example: 8
+        onSiteMarketing:
+          type: boolean
+          example: true
+        noOnSiteMarketing:
+          type: boolean
+          example: true
+        affiliates:
+          type: array
+          items:
+            type: string
+            example: "1234124"
+        affiliatesExcludes:
+          type: array
+          items:
+            type: string
+            example: "1234124"
+        roles:
+          type: array
+          items:
+            type: string
+            example: test
+        platform:
+          $ref: "#/components/schemas/Platform"
+        lobbyFilter:
+          type: array
+          items:
+            type: string
+            example: Lorem
+        firstTimeUser:
+          type: boolean
+          example: false
+        schedulers:
+          type: Object
+        dobFrom:
+          type: number
+          example: 1568239200000
+        dobTo:
+          type: number
+          example: 1569708000000
+        slug:
+          type: string
+          example: promotion-test
+        catId:
+          type: string
+          example: 0fc79da1-954a-4454-84c4-bf7c245cc3f1
+        depositCount:
+          type: number
+          example: 10
+        location:
+          type: array
+          items:
+            type: string
+            example: manchester
+        locationExcludes:
+          type: array
+          items:
+            type: string
+            example: manchester
+        countriesExcludes:
+          type: array
+          items:
+            type: string
+            example: GB
+        rolesExcludes:
+          type: array
+          items:
+            type: string
+            example: GB
+        mobileBackground:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: fairy-gate-carousel.jpg
+        modified:
+          type: number
+          example: 1567411441495
+        modifiedBy:
+          type: string
+          example: sa
+        id:
+          type: string
+          example: e3fa1aec-e448-4e22-b8b7-e1993a8da8cc
+  responses:
+    PromotionsRes:
+      description: Returns promotions filtered
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/PromotionsRes"
+    GetByCatIdRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetByCatIdResPayload"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

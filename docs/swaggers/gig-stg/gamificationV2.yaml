@@ -1,0 +1,121 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  info:
+    title: GamificationV2 service API
+  /gamificationv2/pushGameClickEvents:
+    post:
+      tags:
+        - authMethod
+      summary: Push the game click events
+      description: >
+        Push click games events coming from the frontend. This data can be used
+        for game reccomendation as an example
+
+        \
+
+        This endpoint sends a kafka message with the payload to the following GIG Data kafka topic:
+
+        ```
+
+        - ing_closed_loop_metric_v1
+
+        ```
+      requestBody:
+        description: The payload consists of event, game, player and browser data.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request"
+        required: true
+      responses:
+        default:
+          description: If request is sucessful, the response will be an object  only with
+            the key sucess. If the request failed, the response will contain
+            only the key err with the actual error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  err:
+                    type: string
+components:
+  schemas:
+    request:
+      type: object
+      properties:
+        gameClickEvents:
+          type: array
+          items:
+            type: object
+            properties:
+              event:
+                type: string
+                example: GameClick
+              gameCategory:
+                type: string
+                example: Last Played
+              categoryPage:
+                type: string
+                example: Homepage
+              categoryPageUrl:
+                type: string
+                example: en/casino/
+              gamePlayOption:
+                type: string
+                example: PlayforFun
+              gameName:
+                type: string
+                example: Starburst
+              gameId:
+                type: string
+                example: bc848af1-c19e-4b9f-8dfb-4b7e284c930a
+              gameUrl:
+                type: string
+              gameThumbnailUrl:
+                type: string
+              gameFavourite:
+                type: string
+                example: Yes
+              userAgent:
+                type: string
+                example: Desktop
+              gameResolution:
+                type: string
+              playerState:
+                type: string
+                example: Logged In
+  responses: {}
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

@@ -1,0 +1,921 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /competitions/get:
+    post:
+      tags:
+        - method
+      summary: Get competition
+      description: >
+        This endpoint works in two different ways:
+
+        - If the `slug` is provided it returns the matching competition if that is active
+
+        - If the `slug` is not in the request params, it accepts `nonrestrictedTags`, `type` and `isLeaderboard` as a filter and applies demographics with the `userName`
+
+
+        We support the following types:
+
+        - 0 - Bonus Round Based (default)
+
+        - 1 - Deposit Count Based
+
+        - 2 - Turnover Based
+
+        - 3 - Deposit Amount Based
+
+        - 4 - Action Based
+
+        - 5 - Spin Count Based
+
+        - 6 - Refer a Friend
+
+        - 7 - GameLayer LifeFPP
+
+        - 8 - Sportsbook: number of settled bets
+
+        - 18 - Sportsbook: number of settled bets (Real Money)
+
+        - 12 - Sportsbook: turnover based
+
+        - 19 - Sportsbook: turnover based (Real Money)
+
+        - 11 - Advanced: Rule engine based competition
+
+        - 14 - Real money Turnover Based (Plus locked money)
+
+        - 15 - Real money Spin count Based (Plus locked money)
+
+        - 16 - Bonus money Turnover Based
+
+        - 17 - Bonus money Spin count Based
+
+
+        \
+
+        This endpoint does NOT call GIG Core API
+      responses:
+        default:
+          $ref: "#/components/responses/GetRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetReq"
+        required: true
+  /competitions/getAll:
+    post:
+      tags:
+        - method
+      summary: Get all competitions based in demographics
+      description: >
+        Gets all competitions based in demographics. If a userName is provided
+        competitions will include the user's achievement value for that
+        competition
+
+        \
+
+        This endpoint does NOT call GIG Core API
+      responses:
+        default:
+          $ref: "#/components/responses/GetAllRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetAllReq"
+        required: true
+  /competitions/leaderboardByAchievement:
+    post:
+      tags:
+        - method
+      summary: Get leaderboard-like result of users with their achievement value and
+        reward for given achievement
+      description: >
+        Get leaderboard-like result for users with their achievement value
+
+        and reward for given achievement in descending order, based on the achievement value. If the user is logged in and it is
+
+        within the result set, the user id for this particular user will be part of object so the FE can identify him.
+
+        The response will be paginated by 20 records for each page. You can specify the current page with the "page" request param.
+
+        If missing, the default page is 1.
+
+        \
+
+        This endpoint does NOT call GIG Core API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                achievement:
+                  type: string
+                  example: fooAchievement
+                page:
+                  description: if empty, the value will be 1
+                  type: number
+                  example: 2
+                itemsPerPage:
+                  description: if empty, the value will be 20. The value cannot be bigger than
+                    100.
+                  type: number
+                  example: 10
+              required:
+                - achievement
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  itemsPerPage:
+                    type: number
+                    example: 20
+                  totalItems:
+                    type: number
+                    example: 100
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: number
+                          description: available only if the request is made by logged in user and the
+                            object is for the current user
+                          nullable: true
+                          example: 3040337
+                        userPublicName:
+                          type: string
+                          example: Foo B
+                        rewardId:
+                          type: string
+                          example: 49f540ec-9879-4f3d-b9a5-41701fc971f0
+                        reward:
+                          type: string
+                          example: 100 EUROS
+                        value:
+                          type: number
+                          example: 18
+  openapi:
+    "0": "3"
+    "1": .
+    "2": "0"
+    "3": .
+    "4": "1"
+  /competitions/optIn:
+    post:
+      tags:
+        - authMethod
+      summary: Opt in to competition
+      description: |
+        Opts in the current user to the selected competition
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Tags/Assign/User
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/optInRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/optInReq"
+        required: true
+  /competitions/optOut:
+    post:
+      tags:
+        - authMethod
+      summary: Opt out from competition
+      description: |
+        Opts out the current user to the selected competition
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Tags/Assign/Unassign
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/optOutRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/optOutReq"
+        required: true
+  /competitions/previousCompetitions:
+    post:
+      tags:
+        - method
+      summary: Get previous competitions where a user has at least one achievement
+      description: >
+        Get previous competitions where a user participated (the user got at
+        least one achievement for that competition)
+
+        Previous competitions are competitions which fill any of this 3 conditions:
+          - Expire date in the competition is before now
+          - The competition is not activated
+          - It is a repetitive competition
+        These competitions will include the points and position of the user.
+
+        \
+
+        This endpoint does NOT call GIG Core API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                from:
+                  description: Timestamp in milliseconds to filter from date
+                  type: number
+                  example: 1532080012000
+                to:
+                  description: Timestamp in milliseconds allows to filter until date
+                  type: number
+                  example: 1563616012000
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PreviousCompetitions"
+  /competitions/upcoming:
+    post:
+      tags:
+        - method
+      summary: Get competitions starting from the specified date
+      description: |
+        Get competitions starting from the specified date
+
+        \
+        This endpoint does NOT call GIG Core API
+      responses:
+        default:
+          $ref: "#/components/responses/UpcomingRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpcomingReq"
+        required: true
+components:
+  schemas:
+    GetReq:
+      type: object
+      properties:
+        slug:
+          type: string
+          example: 1st-xmas-scenario-_step-2_-turnover
+        type:
+          type: number
+          example: 5
+        isLeaderboard:
+          type: boolean
+        nonrestrictedTags:
+          type: array
+          items:
+            type: string
+          example:
+            - test
+        userName:
+          type: string
+          example: ReynaGlass5391
+    GetRes:
+      $ref: "#/components/schemas/Competitions"
+    GetAllReq:
+      type: object
+      properties:
+        excludeRoleFilter:
+          type: boolean
+          example: true
+          description: False by default. Excludes the roles demographic filter for this
+            request.
+        type:
+          type: number
+          example: 12
+        isLeaderboard:
+          type: boolean
+        nonrestrictedTags:
+          type: array
+          items:
+            type: string
+          example:
+            - test
+        userName:
+          type: string
+          example: MarshaPetty1233
+    GetAllRes:
+      type: array
+      items:
+        $ref: "#/components/schemas/Competitions"
+    Milestone:
+      type: object
+      properties:
+        winAmount:
+          type: number
+          example: 2
+        payoutMessage:
+          type: string
+          format: uuid
+        rolestoremove:
+          type: string
+          example: test
+        immediatePayout:
+          type: boolean
+          example: true
+        timezone:
+          type: string
+          example: CEST
+        roles:
+          type: string
+          example: test
+        segment:
+          type: number
+          example: 3
+        loopMultiplier:
+          type: number
+          example: 10
+        message:
+          type: string
+          format: uuid
+        value:
+          type: number
+          example: 34
+        token:
+          type: string
+          format: uuid
+    CtaByLang:
+      type: array
+      items:
+        type: object
+        properties:
+          style:
+            type: string
+            example: green
+          type:
+            type: string
+            example: primary
+          position:
+            type: string
+            example: center
+          desktop:
+            type: string
+            example: https://kaboo.com/en/
+          mobile:
+            type: string
+            example: https://kaboo.com/en/
+          text:
+            type: string
+            example: Lorem ipsum dolor sit amet
+    Text:
+      type: object
+      properties:
+        title:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Lorem ipsum dolor sit amet
+        subtitle:
+          type: object
+          example:
+            en: Lorem ipsum dolor sit amet
+          additionalProperties:
+            type: string
+        teaser:
+          type: object
+          example:
+            en: Lorem ipsum dolor sit amet
+          additionalProperties:
+            type: string
+        desc:
+          type: object
+          example:
+            en: Lorem ipsum dolor sit amet
+          additionalProperties:
+            type: string
+        tnc:
+          type: object
+          example:
+            en: click here
+          additionalProperties:
+            type: string
+    Platform:
+      type: object
+      properties:
+        device:
+          type: boolean
+          example: true
+        desktop:
+          type: boolean
+          example: false
+    Multiplier:
+      type: object
+      properties:
+        type:
+          type: string
+          example: fast
+        value:
+          type: number
+          example: 0
+        start:
+          type: number
+          example: 1565906400000
+        end:
+          type: number
+          example: 1564610400000
+    Message:
+      type: object
+      properties:
+        body:
+          type: object
+          example:
+            en: Lorem ipsum dolor sit amet
+          additionalProperties:
+            type: string
+        created:
+          type: string
+          format: date-time
+        design:
+          type: number
+          example: 5
+        error:
+          type: object
+          properties:
+            body:
+              type: object
+              example:
+                en: Lorem ipsum dolor sit amet
+              additionalProperties:
+                type: string
+            title:
+              type: object
+              example:
+                en: Lorem ipsum dolor sit amet
+              additionalProperties:
+                type: string
+        from:
+          type: string
+          example: admin@kaboo.com
+        id:
+          type: string
+          format: uuid
+        link:
+          type: object
+          example:
+            en: Lorem ipsum dolor sit amet
+          additionalProperties:
+            type: string
+        link2:
+          type: object
+          example:
+            en: Lorem ipsum dolor sit amet
+          additionalProperties:
+            type: string
+        name:
+          type: string
+          example: 19.09_RETENTION_SP
+        priority:
+          type: number
+          example: 0
+        subject:
+          type: object
+          example:
+            en: Lorem ipsum dolor sit amet
+          additionalProperties:
+            type: string
+        success:
+          type: object
+          properties:
+            body:
+              type: object
+              example:
+                en: Lorem ipsum dolor sit amet
+              additionalProperties:
+                type: string
+            title:
+              type: object
+              example:
+                en: Lorem ipsum dolor sit amet
+              additionalProperties:
+                type: string
+        type:
+          type: number
+          example: 0
+        url:
+          type: string
+          example: /offers/double-reload-3
+    Games:
+      type: object
+      properties:
+        slug:
+          type: string
+          example: action-bank
+        providerId:
+          type: string
+          example: "10924"
+    Reward:
+      type: object
+      properties:
+        autoExchange:
+          type: boolean
+          example: true
+        currency:
+          type: string
+          example: echoes
+        promoType:
+          type: number
+          example: 3
+        id:
+          type: string
+          format: uuid
+        platform:
+          $ref: "#/components/schemas/Platform"
+        segments:
+          type: array
+          items:
+            type: number
+            example: 8
+        languages:
+          type: array
+          items:
+            type: string
+            example: en
+        daysValid:
+          type: number
+          example: 30
+        modifiedBy:
+          type: string
+          example: su
+        type:
+          type: number
+          example: 1
+        coinValue:
+          type: number
+          example: 0.01
+        euroValue:
+          type: number
+          example: 9
+        price:
+          type: number
+          example: 0
+        active:
+          type: boolean
+          example: true
+        slug:
+          type: string
+          example: 90credits
+        name:
+          type: string
+          example: 90credits
+        virtualCurrencyAmount:
+          type: number
+          example: 90
+        modified:
+          type: number
+          example: 1503614631504
+        position:
+          type: number
+          example: 2
+        betLevel:
+          type: number
+          example: 1
+    Prize:
+      type: object
+      properties:
+        token:
+          $ref: "#/components/schemas/Reward"
+        payoutMessage:
+          $ref: "#/components/schemas/Message"
+    Competitions:
+      type: object
+      properties:
+        segments:
+          type: array
+          items:
+            type: number
+            example: 8
+        games:
+          type: array
+          items:
+            $ref: "#/components/schemas/Games"
+        gamesExcluded:
+          type: array
+          items:
+            $ref: "#/components/schemas/Games"
+        prizes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Prize"
+        multipliers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Multiplier"
+        type:
+          type: number
+          example: 2
+        text:
+          $ref: "#/components/schemas/Text"
+        cta:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/CtaByLang"
+        position:
+          type: number
+          example: 21
+        special:
+          type: boolean
+          example: false
+        specialContent:
+          type: object
+          example:
+            en: Lorem ipsum dolor sit amet
+          additionalProperties:
+            type: string
+        automaticPayout:
+          type: boolean
+          example: true
+        schedulers:
+          type: array
+          items:
+            type: object
+        directOptIn:
+          type: boolean
+          example: false
+          description: Allow to opt in this competition
+        winAmount:
+          type: number
+          example: 0
+        winFreespins:
+          type: number
+          example: 0
+        expiry:
+          type: number
+          example: 1567202400000
+        dobFrom:
+          type: number
+          example: 1565647200000
+        dobTo:
+          type: number
+          example: 1567202400000
+        name:
+          type: string
+          example: Competition test
+        slug:
+          type: string
+          example: competition-test
+        roles:
+          type: array
+          items:
+            type: string
+            example: test
+        isLeaderboard:
+          type: boolean
+          example: true
+        showGamesList:
+          type: boolean
+          example: true
+        active:
+          type: boolean
+          example: true
+        platform:
+          $ref: "#/components/schemas/Platform"
+        depositCount:
+          type: number
+          example: 10
+        location:
+          type: array
+          items:
+            type: string
+            example: Manchester
+        locationExcludes:
+          type: array
+          items:
+            type: string
+            example: Manchester
+        countries:
+          type: array
+          items:
+            type: string
+            example: GB
+        countriesExcludes:
+          type: array
+          items:
+            type: string
+            example: GB
+        affiliates:
+          type: array
+          items:
+            type: string
+            example: "132123"
+        affiliatesExcludes:
+          type: array
+          items:
+            type: string
+            example: "132123"
+        rolesExcludes:
+          type: array
+          items:
+            type: string
+            example: test
+        achievement:
+          type: string
+          example: competition-test
+        countLimit:
+          type: number
+          example: 10
+        minAmount:
+          type: number
+          example: 10
+        minValueToQualify:
+          type: number
+          example: 1
+        start:
+          type: number
+          example: 1565215200000
+        nonrestrictedTags:
+          type: object
+        modified:
+          type: number
+          example: 1567165451244
+        modifiedBy:
+          type: string
+          example: sa
+        id:
+          type: string
+          format: uuid
+        milestones:
+          type: array
+          example: null
+          items:
+            $ref: "#/components/schemas/Milestone"
+        achievementValue:
+          type: number
+          example: 150
+          description: If a user is provided then this field will contains the achievement
+            value for that user in this competition
+        refererId:
+          type: string
+          example: "123123123"
+          description: If a user is provided then this field will contains the referId for
+            that user
+    Stats:
+      type: object
+      properties:
+        value:
+          type: number
+          example: 10
+          description: Achievements value
+        version:
+          type: number
+          example: 0
+          description: Version of this competition in case it is a repeated competition
+            (otherwise it will be always 0)
+        position:
+          type: number
+          example: 1
+          description: the overall position for the user in this competition
+        start:
+          type: string
+          example: 2020-06-01 00:00:01z
+          description: when this competition got the first achievement
+    PreviousCompetitions:
+      allOf:
+        - $ref: "#/components/schemas/Competitions"
+        - type: object
+          properties:
+            stats:
+              type: array
+              items:
+                $ref: "#/components/schemas/Stats"
+    optInReq:
+      type: object
+      properties:
+        competitionId:
+          type: string
+          format: uuid
+    optInRes:
+      type: object
+      properties:
+        success:
+          type: boolean
+        addedRoles:
+          type: array
+          items:
+            type: string
+        allUserRoles:
+          type: array
+          items:
+            type: string
+    optOutReq:
+      type: object
+      properties:
+        competitionId:
+          type: string
+          format: uuid
+    optOutRes:
+      type: object
+      properties:
+        success:
+          type: boolean
+        removedRoles:
+          type: array
+          items:
+            type: string
+        allUserRoles:
+          type: array
+          items:
+            type: string
+    UpcomingReq:
+      type: object
+      properties:
+        excludeRoleFilter:
+          type: boolean
+          example: true
+          description: False by default. Excludes the roles demographic filter for this
+            request.
+        from:
+          type: string
+          example: 2020-04-26
+          description: If "from" is not provided the current date will be used.
+    UpcomingRes:
+      type: array
+      items:
+        $ref: "#/components/schemas/Competitions"
+  responses:
+    GetRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetRes"
+    GetAllRes:
+      description: Returns competitions fetches according to criterias provided
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetAllRes"
+    optInRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/optInRes"
+    optOutRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/optOutRes"
+    UpcomingRes:
+      description: Returns competitions starting from the specified date
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UpcomingRes"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

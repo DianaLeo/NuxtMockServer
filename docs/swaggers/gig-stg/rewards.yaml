@@ -1,0 +1,1212 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /rewards/buySpins:
+    post:
+      summary: Exchange echoes or tokens for free spins, money bonuses or tries for
+        metagames.
+      description: Exchanges echoes or tokens for free spins, money bonuses or tries
+        for metagames (if userName is not provided the userName will be taken
+        from the session).
+      responses:
+        default:
+          $ref: "#/components/responses/BuySpinsRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BuySpinsReq"
+        required: true
+  /rewards/buyTokens:
+    post:
+      summary: Exchange virtual currency rewards for others rewards.
+      description: |
+        Allows to buy any reward which has a Price in virtual currency set up.
+        This endpoint does not call GIG Core
+      responses:
+        default:
+          $ref: "#/components/responses/BuyTokensRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BuyTokensReq"
+        required: true
+  /rewards/claimReward:
+    post:
+      summary: Exchange echoes or tokens for free spins, money bonuses or tries for
+        metagames.
+      description: >
+        Exchanges echoes or tokens for free spins, money bonuses or tries for
+        metagames
+
+        (if userName is not provided the userName will be taken from the session).
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+          - `/v2/GameLayer/LevelUp?userID="+userId+"&newFPP=0` *If levelup reward
+          - `/Payments/OperatorWallets/Transactions/` *If IGC direct cash reward
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/ClaimRewardRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClaimRewardReq"
+        required: true
+  /rewards/claimRewardBatch:
+    post:
+      summary: Exchange batch echoes or tokens for free spins, money bonuses or tries
+        for metagames.
+      description: >
+        Same as /rewards/claimReward, however it accepts array of object
+        allowing for batch operation.
+
+        ```
+          - `/v2/GameLayer/LevelUp?userID="+userId+"&newFPP=0` *If levelup reward
+          - `/Payments/OperatorWallets/Transactions/` *If IGC direct cash reward
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/ClaimRewardBatchRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClaimRewardBatchReq"
+        required: true
+  /rewards/creditReward:
+    post:
+      tags:
+        - private
+      summary: Credit a reward to a user.
+      description: >
+        Credits a reward to a user.
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+          - `/v2/GameLayer/LevelUp?userID="+userId+"&newFPP=0` *If levelup reward is credit
+          - `/Payments/OperatorWallets/Transactions/` *If IGC direct cash reward is credit
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/CreditRewardRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreditRewardReq"
+        required: true
+  openapi:
+    "0": "3"
+    "1": .
+    "2": "0"
+    "3": .
+    "4": "0"
+  info:
+    title: Rewards API
+    version: 1.0.0
+  /rewards/fetchByID:
+    post:
+      summary: Fetch rewards by ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    description: List of rewards IDs to recover
+              example:
+                ids:
+                  - ace42cd1-55ce-42a0-9d41-e573896d304d
+                  - 46426278-0077-4aa3-9df1-c7e73417a992
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Reward"
+                      description: List of found rewards
+        "500":
+          description: An error hapened
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    description: Error message
+  /rewards/fetchUserRewards:
+    post:
+      tags:
+        - private
+      summary: Fetch user’s rewards.
+      description: >
+        Fetches user’s rewards (if userName and id are not provided the userName
+        will be taken from the session).
+
+        This endpoint does not call GIG Core
+      responses:
+        default:
+          $ref: "#/components/responses/FetchUserRewardsRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FetchUserRewardsReq"
+        required: true
+  /rewards/get:
+    post:
+      tags:
+        - private
+      summary: Get a reward configuration.
+      description: |
+        Gets a reward configuration.
+        This endpoint does not do IGC calls
+      responses:
+        default:
+          $ref: "#/components/responses/GetRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetReq"
+        required: true
+  /rewards/getAll:
+    post:
+      summary: Get all rewards based on a filter.
+      description: >
+        Gets all rewards based on a filter. If the rewards are only for specific
+        games, they won't be returned if the IP of the request is from a country
+        that's excluded for any of the games on it.
+
+        This endpoint does not call GIG Core
+      responses:
+        default:
+          $ref: "#/components/responses/GetAllRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetAllReq"
+        required: true
+  /rewards/getPosition:
+    post:
+      summary: Get the position for a user in a meta reward.
+      description: |
+        Gets the position for a user in a meta reward.
+        This endpoint does not call GIG Core
+      responses:
+        default:
+          $ref: "#/components/responses/GetPositionRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetPositionReq"
+        required: true
+  /rewards/getUserRewards:
+    post:
+      summary: Get user's rewards.
+      description: |
+        Gets user's rewards.
+        This endpoint does not call GIG Core
+      responses:
+        default:
+          $ref: "#/components/responses/GetUserRewardsRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetUserRewardsReq"
+        required: true
+  /rewards/history:
+    post:
+      summary: Get the reward history for one or more userNames
+      description: |
+        Gets the reward history for one or more userNames.
+        This endpoint does not call GIG Core
+      responses:
+        default:
+          $ref: "#/components/responses/HistoryRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HistoryReq"
+        required: true
+  /rewards/newlyAwardedTokens:
+    post:
+      summary: Get the newly awarded rewards for the logged-in user
+      description: >
+        Returns the number of newly awarded rewards minus newly removed /
+        deducted rewards
+
+        since the last call to /rewards/getUserRewards
+      responses:
+        default:
+          $ref: "#/components/responses/NewlyAwardedTokensRes"
+  /rewards/setUserRewards:
+    post:
+      tags:
+        - private
+      summary: Credit rewards to a user
+      description: >
+        Credits rewards to a user
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+          - `/v2/GameLayer/LevelUp?userID="+userId+"&newFPP=0` *If levelup reward is credit
+          - `/Payments/OperatorWallets/Transactions/` *If IGC direct cash reward is credit
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/setUserRewardsRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/setUserRewardsReq"
+        required: true
+  /rewards/subtractReward:
+    post:
+      tags:
+        - private
+      summary: Subtract a reward from a user.
+      description: |
+        Subtracts a reward from a user.
+        This endpoint does not call GIG Core
+      responses:
+        default:
+          $ref: "#/components/responses/SubtractRewardRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubtractRewardReq"
+        required: true
+components:
+  schemas:
+    BuySpinsReq:
+      type: object
+      required:
+        - numberOfSpins
+        - rewardName
+      properties:
+        numberOfSpins:
+          type: number
+          example: 10
+        slug:
+          type: string
+          example: starburst
+          description: Game slug
+        userName:
+          type: string
+          example: qaUk
+          description: If userName is not provided it will be taken from the session
+        rewardName:
+          type: string
+          example: startburst-token
+        claimAll:
+          type: boolean
+          example: "true"
+    BuySpinsRes:
+      type: object
+      properties:
+        numberOfSpins:
+          type: number
+          example: null
+        game:
+          type: object
+          additionalProperties:
+            type: string
+          example: ""
+        position:
+          type: number
+          example: 5
+        rewardWon:
+          $ref: "#/components/schemas/Reward"
+        rewardsWon:
+          items:
+            $ref: "#/components/schemas/RewardsWon"
+          type: array
+        virtualCurrency:
+          format: int64
+          type: integer
+        rewards:
+          additionalProperties:
+            $ref: "#/components/schemas/UserReward"
+          type: object
+    BuyTokensReqTokenInfo:
+      type: object
+      required:
+        - slug
+      properties:
+        slug:
+          type: string
+        number:
+          type: number
+    BuyTokensReq:
+      type: object
+      required:
+        - purchase
+      properties:
+        purchase:
+          type: array
+          items:
+            $ref: "#/components/schemas/BuyTokensReqTokenInfo"
+        userName:
+          type: string
+          example: qaUk
+    BuyTokensRes:
+      type: object
+      properties:
+        rewards:
+          additionalProperties:
+            type: object
+    ClaimRewardReq:
+      type: object
+      required:
+        - numberOfSpins
+        - rewardName
+      properties:
+        numberOfSpins:
+          type: number
+          example: 10
+        slug:
+          type: string
+          example: starburst
+          description: Game slug
+        userName:
+          type: string
+          example: qaUk
+          description: If userName is not provided it will be taken from the session
+        rewardName:
+          type: string
+          example: startburst-token
+        claimAll:
+          type: boolean
+          example: "true"
+    ClaimRewardRes:
+      type: object
+      properties:
+        numberOfSpins:
+          type: number
+          example: null
+        game:
+          type: object
+          additionalProperties:
+            type: string
+          example: ""
+        position:
+          type: number
+          example: 5
+        rewardWon:
+          $ref: "#/components/schemas/Reward"
+        rewardsWon:
+          items:
+            $ref: "#/components/schemas/RewardsWon"
+          type: array
+        virtualCurrency:
+          format: int64
+          type: integer
+        rewards:
+          additionalProperties:
+            $ref: "#/components/schemas/UserReward"
+          type: object
+    ClaimRewardBatchReq:
+      type: array
+      items:
+        type: object
+        required:
+          - numberOfSpins
+          - rewardName
+        properties:
+          numberOfSpins:
+            type: number
+            example: 10
+          slug:
+            type: string
+            example: starburst
+            description: Game slug
+          userName:
+            type: string
+            example: qaUk
+            description: If userName is not provided it will be taken from the session
+          rewardName:
+            type: string
+            example: startburst-token
+          claimAll:
+            type: boolean
+            example: "true"
+    ClaimRewardBatchRes:
+      type: array
+      items:
+        type: object
+        properties:
+          numberOfSpins:
+            type: number
+            example: null
+          game:
+            type: object
+            additionalProperties:
+              type: string
+            example: ""
+          position:
+            type: number
+            example: 5
+          rewardWon:
+            $ref: "#/components/schemas/Reward"
+          rewardsWon:
+            items:
+              $ref: "#/components/schemas/RewardsWon"
+            type: array
+          virtualCurrency:
+            format: int64
+            type: integer
+          rewards:
+            additionalProperties:
+              $ref: "#/components/schemas/UserReward"
+            type: object
+    CreditRewardReq:
+      type: object
+      required:
+        - userId
+        - rewardSlug
+      properties:
+        userId:
+          type: number
+          example: 10
+        rewardSlug:
+          type: string
+        amount:
+          type: number
+    CreditRewardRes:
+      type: object
+      properties:
+        success:
+          type: boolean
+    FetchUserRewardsReq:
+      type: object
+      properties:
+        userName:
+          type: string
+          description: If userName is not provided, it will be taken from the session
+        id:
+          type: string
+          description: Id of the user
+    FetchUserRewardsRes:
+      $ref: "#/components/schemas/UserReward"
+    GetReq:
+      required:
+        - Slug
+      type: object
+      properties:
+        Slug:
+          type: string
+          description: Slug of the reward
+    GetRes:
+      $ref: "#/components/schemas/Reward"
+    GetAllReq:
+      type: object
+      properties:
+        slugs:
+          type: array
+          items:
+            type: string
+          description: If provided only rewards within these reward slugs are returned
+        userName:
+          type: string
+          example: qauk
+          description: If provided only valid rewards for that user are returned
+        order:
+          type: string
+          description: allows to set what property we are going to use to order the results.
+    GetAllRes:
+      type: array
+      items:
+        $ref: "#/components/schemas/Reward"
+    GetPositionReq:
+      required:
+        - slug
+      type: object
+      properties:
+        slug:
+          type: string
+          description: Meta token reward slugs.
+          example: 1-credit
+        userName:
+          type: string
+          description: If userName is not provided it will be retrieved from the session.
+          example: qauk
+    GetPositionRes:
+      type: number
+      example: 5
+    GetUserRewardsReq:
+      required:
+        - order
+      type: object
+      properties:
+        userName:
+          type: string
+          description: If userName is not provided, it will be taken from the session
+          example: qauk
+        populate:
+          type: boolean
+          description: Populate game information within rewards. Games are affected by
+            country restrictions, if you don't see games it may be because the
+            IP of the request is from one of those countries.
+          example: true
+        order:
+          type: string
+          description: Field we will use to order the result
+          example: position
+    GetUserRewardsRes:
+      type: object
+      additionalProperties:
+        type: object
+    HistoryReq:
+      type: object
+      properties:
+        UserName:
+          type: object
+          description: If userName is not provided it will be taken from the session
+    HistoryRes:
+      type: object
+      required:
+        - userName
+        - userId
+        - rewards
+        - rewardHistory
+      properties:
+        userName:
+          type: string
+          description: User name
+          example: qauk
+        userId:
+          type: integer
+          description: User id
+          example: 33221
+        rewards:
+          additionalProperties:
+            type: object
+            properties:
+              oneOf:
+                - type: integer
+                - type: array
+                  items:
+                    type: string
+                    format: date-time
+        rewardHistory:
+          additionalProperties:
+            type: object
+            required:
+              - balance
+              - info
+              - modified
+              - modifiedBy
+              - reason
+              - value
+            properties:
+              balance:
+                oneOf:
+                  - type: integer
+                  - type: array
+                    items:
+                      type: string
+                      format: date-time
+              info:
+                type: string
+                description: Information relative to the transaction of this reward
+                example: Reward credit-1 claimed
+              modified:
+                type: string
+                format: date-time
+              modifiedBy:
+                type: string
+                description: User who performances the transaction
+                example: SA
+              reason:
+                type: integer
+                description: id of the reason behind this transaction
+                example: 1
+              value:
+                oneOf:
+                  - type: integer
+                  - type: array
+                    items:
+                      type: string
+                      format: date-time
+              position:
+                type: integer
+                description: position of the reward
+                example: 4
+              virtualCurrencyAmount:
+                type: number
+                description: Cost of this reward in virtual currency
+                example: 20
+              money:
+                type: number
+                description: money this reward was worth
+                example: 10
+              rewardWon:
+                type: string
+                description: reward was won in this transaction
+                example: credit-1
+              typeTransaction:
+                type: string
+                description: type of transaction DEBIT or CREDIT
+                example: CREDIT
+              rewardsWon:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    amount:
+                      type: integer
+                      description: number of rewards gained with this reward
+                      example: 1
+                    reward:
+                      type: string
+                      description: Slug of the reward gained
+                      example: credit-1
+    Reward:
+      description: Reward is the model for rewards
+      properties:
+        active:
+          type: boolean
+          description: Determines if the reward is active
+          example: true
+        affiliates:
+          items:
+            type: string
+          type: array
+          description: Filters the validity of this reward for a specific set ot affiliate
+            ids
+        affiliatesExcludes:
+          items:
+            type: string
+          type: array
+          description: Exclude the validity of this reward for a specific set of affiliate
+            ids
+        autoExchange:
+          type: boolean
+          description: Determines if this reward will be auto exchange at the moment the
+            user gets it
+          example: true
+        betLevel:
+          format: int64
+          type: integer
+          description: Frontend field to determine the bet level
+          example: 10
+        bonusCode:
+          type: string
+          description: GIG Core Bonus code this reward will use to call GIG Core in order
+            to get the reward
+          example: PROMOCODE1
+        category:
+          $ref: "#/components/schemas/category"
+        coinValue:
+          format: double
+          type: number
+        countries:
+          items:
+            type: string
+            example: en
+          type: array
+          description: Filters the validity of this reward for a specific set ot countries
+        currency:
+          type: string
+          description: In case of a virtual currency reward this determines what kind of
+            currency it uses
+          example: echoes
+        daysValid:
+          format: int64
+          type: integer
+          description: Number of days this reward will be valid (0 for making it non
+            expirable)
+          example: 10
+        dobFrom:
+          type: string
+          format: date-time
+          description: Filters the validity of this reward for users with a date of birth
+            from this value
+        dobTo:
+          type: string
+          format: date-time
+          description: Filters the validity of this reward for users with a date of birth
+            to this value
+        elementsPerTry:
+          format: int64
+          type: integer
+        euroValue:
+          format: double
+          type: number
+          description: Frontend value to represent what would be the value in euros of
+            this reward
+        expiry:
+          type: string
+          format: date-time
+          description: "Filters the validity of this reward to not be valid from this
+            value "
+        games:
+          items:
+            type: object
+          type: array
+        id:
+          type: string
+        image:
+          additionalProperties:
+            type: string
+          type: object
+        icon:
+          additionalProperties:
+            type: string
+          type: object
+        languages:
+          items:
+            type: string
+          type: array
+        modified:
+          type: string
+          format: date-time
+        modifiedBy:
+          type: object
+        name:
+          type: string
+        numberOfSpins:
+          format: int64
+          type: integer
+        platform:
+          $ref: "#/components/schemas/platform"
+        position:
+          format: int64
+          type: integer
+        price:
+          format: double
+          type: number
+        progress:
+          type: boolean
+        promoType:
+          format: int64
+          type: integer
+        rangeConfig:
+          additionalProperties:
+            items:
+              $ref: "#/components/schemas/RangeConfig"
+            type: array
+          type: object
+        rewardGroup:
+          additionalProperties:
+            items:
+              $ref: "#/components/schemas/SubRewards"
+            type: array
+          type: object
+        rewardLevel:
+          format: int64
+          type: integer
+        roles:
+          items:
+            type: string
+          type: array
+        segments:
+          items:
+            format: int64
+            type: integer
+          type: array
+        slug:
+          type: string
+        start:
+          type: string
+          format: date-time
+        text:
+          $ref: "#/components/schemas/text"
+        type:
+          format: int64
+          type: integer
+        validity:
+          items:
+            type: string
+            format: date-time
+          type: array
+        valueBasedKey:
+          type: string
+        values:
+          additionalProperties:
+            type: object
+          type: object
+        virtualCurrencyAmount:
+          format: int64
+          type: integer
+        virtualCurrencyPriceToBuy:
+          format: double
+          type: number
+        virtualCurrencyTypeToBuy:
+          type: string
+      type: object
+    text:
+      properties:
+        au:
+          type: string
+        ca:
+          type: string
+        de:
+          type: string
+        en:
+          type: string
+        fi:
+          type: string
+        gb:
+          type: string
+        ja:
+          type: string
+        nl:
+          type: string
+        no:
+          type: string
+        nz:
+          type: string
+        sv:
+          type: string
+      type: object
+    category:
+      properties:
+        au:
+          type: string
+        ca:
+          type: string
+        de:
+          type: string
+        en:
+          type: string
+        fi:
+          type: string
+        gb:
+          type: string
+        ja:
+          type: string
+        nl:
+          type: string
+        no:
+          type: string
+        nz:
+          type: string
+        sv:
+          type: string
+      type: object
+    platform:
+      properties:
+        desktop:
+          type: boolean
+        mobile:
+          type: boolean
+      type: object
+    SubRewards:
+      properties:
+        message:
+          type: object
+        messageTemplate:
+          type: string
+        odds:
+          format: double
+          type: number
+        position:
+          format: int64
+          type: integer
+        rolesToAdd:
+          items:
+            type: string
+          type: array
+        rolesToRemove:
+          items:
+            type: string
+          type: array
+        token:
+          type: string
+        valueEur:
+          format: double
+          type: number
+        winText:
+          type: string
+      type: object
+    RangeConfig:
+      properties:
+        at:
+          type: string
+        configTokens:
+          items:
+            $ref: "#/components/schemas/TokenConfig"
+          type: array
+        from:
+          format: int64
+          type: integer
+        message:
+          type: object
+        rolesToAdd:
+          items:
+            type: string
+          type: array
+        rolesToRemove:
+          items:
+            type: string
+          type: array
+        to:
+          format: int64
+          type: integer
+      type: object
+    TokenConfig:
+      properties:
+        amount:
+          type: object
+        token:
+          type: string
+      type: object
+    RewardsWon:
+      properties:
+        amount:
+          format: int64
+          type: integer
+        reward:
+          type: string
+      type: object
+    UserReward:
+      description: UserReward is the model for rewards owned by users
+      properties:
+        rewards:
+          additionalProperties:
+            type: object
+          type: object
+        userName:
+          type: string
+      type: object
+    hubotReward:
+      properties:
+        Name:
+          type: string
+        Value:
+          type: object
+      type: object
+    NewlyAwardedTokensRes:
+      type: number
+      example: 3
+    RewardsConfigInSetUserRewards:
+      type: object
+      properties:
+        Info:
+          type: string
+        Reward:
+          additionalProperties:
+            type: object
+          type: object
+        Roles:
+          items:
+            type: string
+          type: array
+        RolesToRemove:
+          items:
+            type: string
+          type: array
+        Segment:
+          format: int64
+          type: integer
+    setUserRewardsReq:
+      type: object
+      required:
+        - reason
+      properties:
+        amount:
+          format: double
+          type: number
+        bulk:
+          type: boolean
+          description: If we want to add multiple rewards to users
+        info:
+          type: string
+        modified:
+          type: string
+        modifiedBy:
+          type: string
+        reason:
+          format: int64
+          type: integer
+        reward:
+          additionalProperties:
+            type: object
+          type: object
+        rewards:
+          items:
+            $ref: "#/components/schemas/RewardsConfigInSetUserRewards"
+          type: array
+        segment:
+          format: int64
+          type: integer
+        roles:
+          type: string
+        userName:
+          type: object
+        users:
+          type: object
+    setUserRewardsRes:
+      type: object
+    SubtractRewardReq:
+      type: object
+      required:
+        - userId
+        - rewardSlug
+        - info
+        - modifiedBy
+        - reason
+      properties:
+        userId:
+          type: number
+          example: 10
+        rewardSlug:
+          type: string
+        amount:
+          type: number
+        info:
+          type: string
+        modifiedBy:
+          type: string
+        reason:
+          type: number
+    SubtractRewardRes:
+      type: object
+      properties:
+        success:
+          type: boolean
+  responses:
+    BuySpinsRes:
+      description: Depending on the reward we exchange the response will contain
+        useful information for that kind of reward
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BuySpinsRes"
+    BuyTokensRes:
+      description: Depending on the reward we exchange the response will contain
+        useful information for that kind of reward
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BuyTokensRes"
+    ClaimRewardRes:
+      description: Depending on the reward we exchange the response will contain
+        useful information for that kind of reward
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ClaimRewardRes"
+    ClaimRewardBatchRes:
+      description: Depending on the reward we exchange the response will contain
+        useful information for that kind of reward
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ClaimRewardBatchRes"
+    CreditRewardRes:
+      description: Response if the operation was success
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CreditRewardRes"
+    FetchUserRewardsRes:
+      description: Returns an object with all the rewards in a user
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FetchUserRewardsRes"
+    GetRes:
+      description: Returns the reward configuration
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetRes"
+    GetAllRes:
+      description: Returns filtered rewards
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetAllRes"
+    GetPositionRes:
+      description: Position for this user in this meta reward
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetPositionRes"
+    GetUserRewardsRes:
+      description: Return users rewards
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetUserRewardsRes"
+    HistoryRes:
+      description: Returns user rewards and history with all the transaction for those
+        rewards
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/HistoryRes"
+    NewlyAwardedTokensRes:
+      description: Returns the total number of newly awarded rewards
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NewlyAwardedTokensRes"
+    setUserRewardsRes:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/setUserRewardsRes"
+    SubtractRewardRes:
+      description: Replies if the operation was successful
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SubtractRewardRes"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

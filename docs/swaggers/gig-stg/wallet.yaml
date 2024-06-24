@@ -1,0 +1,1059 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /wallet/forfeitBonus:
+    post:
+      tags:
+        - authMethod
+      summary: Forfeit user bonus
+      description: |
+        Forfeit user bonus
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Bonuses/delete/{userBonusId}
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/forfeitBonusParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/forfeitBonusRes"
+  /wallet/getApplicableBonuses:
+    post:
+      tags:
+        - authMethod
+      summary: Returns a list of applicable bonuses
+      description: >
+        Get a list of bonuses that are public and can be claimed by the logged
+        in user (Bonuses that are 'IncludedInlist' and not 'Manual Bonuses')
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Bonuses/getavailable/1
+
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getGamingAccountsRes"
+  /wallet/getBonusesClaimedAcrossLicence:
+    post:
+      tags:
+        - method
+      summary: Gets the count of all claimed bonuses across all brands within the same
+        licence in camel case.
+      description: >
+        Gets the count of all claimed bonuses across all brands within the same
+        licence in camel case.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Bonuses/GetClaimedAcrossLicence
+
+        ```
+      responses:
+        default:
+          description: contains the count of claimed bonuses within the same licence
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  wagerable:
+                    type: integer
+                    example: 58
+  /wallet/getDepositRemainingLimits:
+    post:
+      tags:
+        - authMethod
+      summary: Get Deposit Remaining Limits
+      description: |
+        Get Deposit Remaining Limits
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Payments/GetDepositRemainingLimits
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getDepositRemainingLimitsReq"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getDepositRemainingLimitsRes"
+  /wallet/getGamesTransactions:
+    post:
+      tags:
+        - authMethod
+      summary: Get all game transactions for a single user in a period of time
+      description: |
+        Get all game transactions for a single user in a period of time
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Games/Transactions
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                from:
+                  type: string
+                  example: 2023-01-04T12:47:48.2838769
+                to:
+                  type: string
+                  example: 2023-01-07T12:45:43.1245
+      responses:
+        default:
+          description: contains the transactions found for this period of time
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        activityId:
+                          type: string
+                          example: 2022040102902473200
+                        date:
+                          type: string
+                          format: date
+                          example: 2022-04-10T09:48:57.273
+                        game:
+                          type: string
+                          example: Sweet Alchemy
+                        vendor:
+                          type: string
+                          example: Play N Go
+                        currency:
+                          type: string
+                          example: EUR
+                        activityType:
+                          type: string
+                          example: Bet
+                        bet:
+                          type: number
+                          format: float
+                          example: 7
+                        win:
+                          type: number
+                          format: float
+                          example: 8
+                        balanceBefore:
+                          type: number
+                          format: float
+                          example: 9
+                        balanceAfter:
+                          type: number
+                          format: float
+                          example: 10
+                        walletAmount:
+                          type: number
+                          format: float
+                          example: 11
+                        bonusAmount:
+                          type: number
+                          format: float
+                          example: 12
+                        bonus:
+                          type: string
+                          example: Free Bet
+        DATE_RANGE_TOO_BIG:
+          description: If the period of time sent in the request body is too big
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    example: DATE_RANGE_TOO_BIG
+        INVALID_FROM_DATE:
+          description: If the date sent in the body parameter 'from' is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    example: INVALID_FROM_DATE
+        INVALID_TO_DATE:
+          description: If the date sent in the body parameter 'to' is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    example: INVALID_TO_DATE
+  /wallet/getGamingAccounts:
+    post:
+      tags:
+        - authMethod
+      summary: Returns User Wallet
+      description: |
+        Returns the logged in user's Wallet.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Wallet
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getGamingAccountsRes"
+  /wallet/getGrantedBonuses:
+    post:
+      tags:
+        - authMethod
+      summary: Gets the user current bonuses
+      description: |
+        Gets the user current bonuses
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Bonuses
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                populate:
+                  type: boolean
+                  description: Optional. If true, the bonuses from IGC will be populated with the
+                    data from the Magic CMS mapped by bonus code
+                  example: true
+      responses:
+        default:
+          $ref: "#/components/responses/getGrantedBonusesRes"
+  openapi:
+    "0": "3"
+    "1": .
+    "2": "0"
+    "3": .
+    "4": "1"
+  /wallet/getLifetimeDeposits:
+    post:
+      tags:
+        - authMethod
+      summary: Get user's deposits information
+      description: |
+        Gets a users lifetime/seven days/thirty days deposits
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Payments/GetLifetimeDeposits
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getLifetimeDepositsRes"
+  /wallet/getPXPPaymentDepositURL:
+    post:
+      tags:
+        - authMethod
+      summary: PXP payment URL endpoint
+      description: >
+        In Pennsylvania state, we need to offer the possibility for players to
+        use PXP payment solution.
+
+        This endpoint allows the player to deposit using PXP payment solution.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Pxp/url/Deposit
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shopId:
+                  type: string
+                  example: gig
+                successUrl:
+                  type: string
+                  example: https://brand-example.com/payment/sucess
+                pendingUrl:
+                  type: string
+                  example: https://brand-example.com/payment/pending
+                errorUrl:
+                  type: string
+                  example: https://brand-example.com/payment/error
+                cancelUrl:
+                  type: string
+                  example: https://brand-example.com/payment/cancel
+                refusedUrl:
+                  type: string
+                  example: https://brand-example.com/payment/refused
+                returnUrl:
+                  type: string
+                  example: https://brand-example.com/payment/return
+                isPaymentMethodChangeAllowed:
+                  type: boolean
+                  example: false
+                grossAmount:
+                  type: number
+                  example: 9
+                paymentTypeId:
+                  type: number
+                  example: 7
+                bonusCode:
+                  type: string
+                  example: ""
+        required: true
+      responses:
+        default:
+          description: If the deposit is correctly done.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redirectUrl:
+                    type: string
+                    example: https://payments.test.kalixa.com/iCheckout/PaymentMethods/12?requestData=os1xymuj1ty4rie5cwhpupod_fb23abbd-67a7-413f-9be2-b0005b35bc5b
+                  redirectData:
+                    type: string
+                    example: "{}"
+        CONSENT_USER_HASPENDINGCONSENTS:
+          description: User has pending consents to accept.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    example: CONSENT_USER_HASPENDINGCONSENTS
+        OPERATION_NOT_ALLOWED:
+          description: The operation is not allowed for the given brand.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    example: OPERATION_NOT_ALLOWED
+  /wallet/getPXPPaymentWithdrawalURL:
+    post:
+      tags:
+        - authMethod
+      summary: PXP payment URL endpoint
+      description: >
+        In Pennsylvania state, we need to offer the possibility for players to
+        use PXP payment solution.
+
+        This endpoint allows the player to withdraw using PXP payment solution.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Pxp/url/Withdrawal
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shopId:
+                  type: string
+                  example: gig
+                successUrl:
+                  type: string
+                  example: https://brand-example.com/payment/sucess
+                pendingUrl:
+                  type: string
+                  example: https://brand-example.com/payment/pending
+                errorUrl:
+                  type: string
+                  example: https://brand-example.com/payment/error
+                cancelUrl:
+                  type: string
+                  example: https://brand-example.com/payment/cancel
+                refusedUrl:
+                  type: string
+                  example: https://brand-example.com/payment/refused
+                returnUrl:
+                  type: string
+                  example: https://brand-example.com/payment/return
+                isPaymentMethodChangeAllowed:
+                  type: boolean
+                  example: false
+                grossAmount:
+                  type: number
+                  example: 9
+                paymentTypeId:
+                  type: number
+                  example: 7
+                bonusCode:
+                  type: string
+                  example: ""
+        required: true
+      responses:
+        default:
+          description: If the withdrawal is correctly done.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redirectUrl:
+                    type: string
+                    example: https://payments.test.kalixa.com/iCheckout/PaymentMethods/12?requestData=os1xymuj1ty4rie5cwhpupod_fb23abbd-67a7-413f-9be2-b0005b35bc5b
+                  redirectData:
+                    type: string
+                    example: "{}"
+        CONSENT_USER_HASPENDINGCONSENTS:
+          description: User has pending consents to accept.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    example: CONSENT_USER_HASPENDINGCONSENTS
+        OPERATION_NOT_ALLOWED:
+          description: The operation is not allowed for the given brand.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    example: OPERATION_NOT_ALLOWED
+  /wallet/getPaymentsDepositURL:
+    post:
+      tags:
+        - authMethod
+      summary: Get payments deposit URL
+      description: |
+        Gets a deposit URL 
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Payments/url/{module}/{submodule}
+          with the value:
+        - /Payments/url/Payment/Deposit
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getPaymentsDepositURLParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getPaymentsDepositURLRes"
+  /wallet/getPaymentsWithdrawURL:
+    post:
+      tags:
+        - authMethod
+      summary: Get payments withdraw URL
+      description: |
+        Gets a withdraw URL 
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Payments/url/{module}/{submodule}
+          with the value:
+        - /Payments/url/Payment/Withdraw
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getPaymentsWithdrawURLParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getPaymentsWithdrawURLRes"
+  /wallet/getTransactionHistory:
+    post:
+      tags:
+        - authMethod
+      summary: Returns transaction history
+      description: >
+        Returns transaction history between the given dates for the logged in
+        user
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Wallet/Transactions
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getTransactionHistoryParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getTransactionHistoryRes"
+  /wallet/getTransactionHistoryV2:
+    post:
+      tags:
+        - authMethod
+      summary: Get transaction history
+      description: >
+        Returns transaction history between the given dates for the logged in
+        user
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Wallet/TransactionsV2
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getTransactionHistoryV2Req"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getTransactionHistoryV2Res"
+components:
+  schemas:
+    forfeitBonusParams:
+      type: object
+      properties:
+        userBonusId:
+          type: number
+          example: 1234
+    forfeitBonusPayload:
+      type: boolean
+      example: true
+    getGamingAccountsPayload:
+      type: object
+      items:
+        type: object
+        properties:
+          bonusAmount:
+            additionalProperties:
+              type: number
+            example:
+              EUR: 50
+          code:
+            type: string
+            example: IGCTEST50
+          active:
+            type: boolean
+          enabled:
+            type: boolean
+          fixed:
+            type: boolean
+          id:
+            type: string
+            example: GUID
+          key:
+            type: string
+            example: 5808dfb4f601f30ce6426732
+          minAmount:
+            additionalProperties:
+              type: number
+            example:
+              EUR: 10
+          modified:
+            type: number
+            example: 1559041061087
+          modifiedBy:
+            type: string
+            example: sa
+          multiplier:
+            type: number
+            example: 0.5
+          name:
+            type: string
+            example: IGCTEST50
+          title:
+            additionalProperties:
+              type: string
+            example:
+              en: Title in English
+          desc:
+            additionalProperties:
+              type: string
+            example:
+              en: Description in English
+          typeId:
+            type: number
+            example: 5
+          excludedPaymentMethods:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: number
+                  example: 11
+                code:
+                  type: string
+                  example: trustly
+                title:
+                  type: string
+                  example: Trustly
+                selected:
+                  type: boolean
+          termsAndConditions:
+            additionalProperties:
+              type: string
+            example:
+              en: Example TNC
+          ctasMain:
+            additionalProperties:
+              type: array
+              items:
+                type: object
+                properties:
+                  desktop:
+                    type: string
+                  mobile:
+                    type: string
+                  style:
+                    type: string
+                  text:
+                    type: string
+                  type:
+                    type: string
+                  position:
+                    type: string
+                    example: center
+            example:
+              en:
+                - desktop: https://kaboo.com/something/
+                  mobile: https://kaboo.com/something/
+                  style: green
+                  text: Test
+                  type: primary
+      properties:
+        accounts:
+          type: array
+          items:
+            type: object
+            properties:
+              amount:
+                type: number
+                example: 317.81
+              bonusMoney:
+                type: number
+              realBonusMoney:
+                type: number
+              currency:
+                type: string
+                example: GBP
+              isBonusAccount:
+                type: boolean
+              name:
+                type: string
+                example: CasinoWallet
+              vendor:
+                type: string
+                example: CasinoWallet
+    getDepositRemainingLimitsReq:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: 2022-06-29T12:21:13.6838356+00:00
+    getDepositRemainingLimitsRes:
+      type: object
+      properties:
+        actionType:
+          type: number
+          example: 1
+        limitResults:
+          type: array
+          items:
+            type: object
+            properties:
+              limitRange:
+                type: number
+                example: 1
+              remaining:
+                type: number
+                format: float
+                example: 1
+              limitId:
+                type: number
+                example: 2
+              effectiveDate:
+                type: string
+                format: date-time
+                example: 2022-06-29T12:21:13.7775794+00:00
+    getGrantedBonusesPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          name:
+            type: string
+          description:
+            type: string
+          termsLinks:
+            type: string
+          type:
+            type: string
+          status:
+            type: string
+          vendor:
+            type: string
+          currency:
+            type: string
+          amount:
+            type: number
+          remainingAmount:
+            type: number
+          initialWagerRequirementCurrency:
+            type: string
+          initialWagerRequirementAmount:
+            type: number
+          remainingWagerRequirementCurrency:
+            type: string
+          remainingWagerRequirementAmount:
+            type: number
+          forfeitAmount:
+            type: number
+          pointsToCollect:
+            type: number
+          pointsLeftToCollect:
+            type: number
+          grantedDate:
+            type: string
+          expiryDate:
+            type: string
+          confiscateAllFundsOnExpiration:
+            type: string
+            nullable: true
+            example: null
+          confiscateAllFundsOnForfeiture:
+            type: boolean
+          productName:
+            type: string
+          userBonusId:
+            type: number
+          openBets:
+            type: number
+          code:
+            type: string
+          redeemType:
+            type: string
+    getLifetimeDepositsRes:
+      type: object
+      properties:
+        sevenDayDeposits:
+          type: number
+          format: float
+          example: 1.1
+        thirtyDayDeposits:
+          type: number
+          format: float
+          example: 1.1
+        lifetimeDeposits:
+          type: number
+          format: float
+          example: 1.1
+        baseSevenDayDeposits:
+          type: number
+          format: float
+          example: 1.1
+        baseThirtyDayDeposits:
+          type: number
+          format: float
+          example: 1.1
+        baseLifetimeDeposits:
+          type: number
+          format: float
+          example: 1.1
+    getPaymentsDepositURLParams:
+      type: object
+      properties:
+        gateway:
+          type: string
+          example: mygateway
+        lang:
+          type: string
+          example: en
+        bonusCode:
+          type: string
+          example: mybonuscode
+    getPaymentsDepositURLPayload:
+      type: string
+      example: https://example.com/
+    getPaymentsWithdrawURLParams:
+      type: object
+      properties:
+        gateway:
+          type: string
+          example: mygateway
+        lang:
+          type: string
+          example: en
+        bonusCode:
+          type: string
+          example: mybonuscode
+    getPaymentsWithdrawURLPayload:
+      type: string
+      example: https://example.com/
+    getTransactionHistoryParams:
+      type: object
+      properties:
+        from:
+          type: string
+          example: 2019-09-06T11:02:20.1542515+00:00
+        to:
+          type: string
+          example: 2019-09-06T11:02:20.1542515+00:00
+    getTransactionHistoryPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          AllowWithdrawReversal:
+            type: boolean
+          Amount:
+            type: number
+            example: 6.1
+          BalanceAfter:
+            type: number
+          BalanceBefore:
+            type: number
+          Currency:
+            type: string
+          Date:
+            type: string
+            example: 2019-09-06T11:02:20.1698632+00:00
+          Description:
+            type: string
+          PaymentTranId:
+            type: string
+          Status:
+            type: string
+          StatusId:
+            type: number
+          TransactionId:
+            type: string
+          TransactionType:
+            type: string
+          TransactionTypeId:
+            type: number
+          WithdrawReversalTimeoutMinutes:
+            type: number
+    getTransactionHistoryV2Req:
+      type: object
+      properties:
+        from:
+          type: number
+          example: 1239986400000
+        to:
+          type: number
+          example: 1239986600000
+    getTransactionHistoryV2Res:
+      type: array
+      items:
+        type: object
+        properties:
+          allowWithdrawReversal:
+            type: boolean
+            example: true
+          amount:
+            type: number
+            format: float
+            example: 6.1
+          balanceAfter:
+            type: number
+            format: float
+            example: 8
+          balanceBefore:
+            type: number
+            format: float
+            example: 7
+          currency:
+            type: string
+            example: SEK
+          date:
+            type: string
+            example: 2019-09-06T11:02:20.1698632+00:00
+          description:
+            type: string
+            example: sample description
+          paymentTranId:
+            type: string
+            example: sample payment transaction id
+          status:
+            type: string
+            example: sample status
+          statusId:
+            type: number
+            example: 9
+          transactionId:
+            type: string
+            example: sample transaction id
+          transactionType:
+            type: string
+            example: sample transaction type
+          transactionTypeId:
+            type: number
+            example: 14
+          withdrawReversalTimeoutMinutes:
+            type: number
+            example: 12
+          providerReference:
+            type: string
+            example: sample provider reference
+          vendorId:
+            type: number
+            example: 16
+          paymentTypeId:
+            type: number
+            example: 17
+          gatewayReference:
+            type: string
+            example: sample payment gateway reference
+  responses:
+    forfeitBonusRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/forfeitBonusPayload"
+    getGamingAccountsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getGamingAccountsPayload"
+    getDepositRemainingLimitsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getDepositRemainingLimitsRes"
+    getGrantedBonusesRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getGrantedBonusesPayload"
+    getLifetimeDepositsRes:
+      description: The response contains information about the deposits that the user
+        has done on his lifetime, on the last thirty days, and on the last seven
+        days.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getLifetimeDepositsRes"
+    getPaymentsDepositURLRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getPaymentsDepositURLPayload"
+    getPaymentsWithdrawURLRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getPaymentsWithdrawURLPayload"
+    getTransactionHistoryRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getTransactionHistoryPayload"
+    getTransactionHistoryV2Res:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getTransactionHistoryV2Res"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

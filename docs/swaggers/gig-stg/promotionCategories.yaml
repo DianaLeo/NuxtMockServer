@@ -1,0 +1,80 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /promotionCategories/get:
+    post:
+      tags:
+        - method
+      summary: Returns Promotion Categories by language
+      description: |
+        Returns all available Promotion Category items for a given language in
+        ascending order, ordered by the "position" property.
+
+        \
+        This endpoint does NOT call GIG Core API
+      responses:
+        default:
+          $ref: "#/components/responses/GetRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetParams"
+        required: true
+components:
+  schemas:
+    GetParams:
+      type: object
+      required:
+        - lang
+      properties:
+        lang:
+          type: string
+          example: en
+    GetResPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            example: GUID
+          title:
+            type: string
+            example: Example title
+  responses:
+    GetRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetResPayload"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

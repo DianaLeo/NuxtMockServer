@@ -1,0 +1,213 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  openapi:
+    "0": "3"
+    "1": .
+    "2": "0"
+    "3": .
+    "4": "1"
+  /externalServices/getChatToken:
+    post:
+      tags:
+        - authMethod
+      summary: Get external chat signed token
+      description: >
+        Returns a signed token that can be used to authenticate with the chat
+        widget provider
+
+
+        For zendesk: https://support.zendesk.com/hc/en-us/articles/360022185314
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                provider:
+                  type: string
+                  example: zendesk
+        required: true
+      responses:
+        default:
+          description: |
+            Signed token
+          content:
+            application/json:
+              schema:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZjOWJlZmIwLTViMGQtNDRhYS1iZDM1LWU2ZDY0ZmI0ZGU5YkBnaWcuY29tIiwiZXh0ZXJuYWxfaWQiOjQ1NTM0MzIsImlhdCI6MTYyMDY1NTY5MywibmFtZSI6IlNoYW5lIn0.8K_M_tY89BZf0h6TGuOrtxl3jdkrGjjQzqpnne7jsuo
+  /externalServices/getIntercomHash:
+    post:
+      tags:
+        - authMethod
+      summary: Get Intercom hash
+      description: >
+        Returns the required hash for Intercom's identify verification
+
+
+        https://www.intercom.com/help/en/articles/183-enable-identity-verification-for-web-and-mobile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userID:
+                  type: integer
+                  example: 4560943
+        required: true
+      responses:
+        default:
+          description: |
+            Hash used for Intercom's integration
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 6702d5458e1b24ba23549ff4e76329c41b2e451429efc2c17234baaa5785ca2a
+  /externalServices/requestToken:
+    post:
+      tags:
+        - authMethod
+      summary: Get token for contest general, simplify or Betsson wallet
+      description: |
+        Depending on the passed params it:
+          - gets the token used to load the contest general service
+          - gets the token for simplify notifications
+          - gets the token for Pool Bets
+          - gets the token for Betsson PAAS cashier or PAAS KYC
+
+        Betsson PAAS cashier accepts the following params in the extra field:
+          - parentSite (used as a recipient of cross frame events)
+          - preselectedAmount (optional; payment amount)
+          - siteTrackingId (optional; payment identifier on merchant)
+          - originUrl (optional; URL of the parent site, where user will be
+            redirected after payment flow is completed)
+
+        Betsson PASS KYC aceepts the the following params in the extra field:
+          - lang (short language identifier according to ISO 639-1,
+            used to provide correct translations)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/requestTokenReq"
+            examples:
+              contest_general:
+                value:
+                  service: contest_general
+              simplify:
+                value:
+                  service: simplify
+                  userID: 123456
+              pool_bets:
+                value:
+                  service: pool_bets
+                  userID: 123456
+                  extra:
+                    email: foo@bar.com
+                    currency: EUR
+                    language_code: en
+              betsson_wallet_cashier:
+                value:
+                  service: betsson_wallet
+                  extra:
+                    parentSite: merchant.com
+              betsson_wallet_kyc:
+                value:
+                  service: betsson_wallet
+                  extra:
+                    lang: en
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/requestTokenRes"
+components:
+  schemas:
+    requestTokenReq:
+      type: object
+      properties:
+        service:
+          type: string
+          example:
+            - contest_general
+            - betsson_wallet
+            - simplify
+            - pool_bets
+          required: true
+        userName:
+          type: string
+          example: testUser1
+        userID:
+          type: integer
+          example: 4560943
+        extra:
+          type: object
+          properties:
+            parentSite:
+              type: string
+              example: merchant.com
+            preselectedAmount:
+              type: number
+              example: 42.19
+            siteTrackingId:
+              type: string
+              example: c2e371b8-4353-4bc9-8e17-43c142a62a33
+            originUrl:
+              type: string
+              example: https://merchantsite.com/en/casino
+            lang:
+              type: string
+              example: en
+            language_code:
+              type: string
+              example: en
+            currency:
+              type: string
+              example: EUR
+            email:
+              type: string
+              example: foo@bar.com
+    requestTokenRes:
+      type: string
+      example: example-token
+  responses:
+    requestTokenRes:
+      description: >
+        Token used to load the
+
+        contest general iframe / Betsson PAAS cashier / KYC / Simplify / Pool Bets
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/requestTokenRes"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

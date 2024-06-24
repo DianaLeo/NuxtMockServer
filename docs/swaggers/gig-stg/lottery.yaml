@@ -1,0 +1,1067 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  openapi:
+    "0": "3"
+    "1": .
+    "2": "0"
+    "3": .
+    "4": "1"
+  /lottery/bulkBuying:
+    post:
+      tags:
+        - authMethod
+      summary: Bulk buying bets
+      description: >
+        This endpoint provides functionality of bulk buying bets, based on the
+        bet lines provided for the specified draws
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Lottery/BulkBuying
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/bulkBuyingParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/bulkBuyingRes"
+  /lottery/createBet:
+    post:
+      tags:
+        - authMethod
+      summary: Create a lottery bet
+      description: |
+        Creates a bet for a given lottery
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Lottery/{provider}/Bets/Create
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createBetParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/createBetRes"
+  /lottery/get:
+    post:
+      tags:
+        - method
+      summary: Get a lottery by id
+      description: >
+        Returns a lottery by id. If the user is logged in it applies the
+        demographic filter as well.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Lottery/LotteryGames
+
+        - /Countries/${countryCode}
+
+        - /Lottery/Draws/GetOpen
+
+        - /Currencies
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getRes"
+  /lottery/getAll:
+    post:
+      tags:
+        - method
+      summary: Get all lotteries
+      description: >
+        Returns all available lotteries. If the user is logged in it applies the
+        demographic filter as well.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Lottery/LotteryGames
+
+        - /Countries/${countryCode}
+
+        - /Lottery/Draws/GetOpen
+
+        - /Currencies
+
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getAllRes"
+  /lottery/getOpenDraws:
+    post:
+      tags:
+        - authMethod
+      summary: Get all open draws
+      description: >
+        This endpoint will return all of the draws which are open for bets to
+        come in. This call can either be called with the `lotteryName` parameter
+        so that results are filtered by a product (e.g. only euromillions), or
+        without it which will return across all products.
+
+
+        Note that for RiSQ this does not necessarily mean that it is when the draw cycle is opened. It will be driven by a separate 'flag' that will drive whether a draw is opened for bets or not.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Countries/${countryCode}
+
+        - /Lottery/Draws/GetOpen
+
+        - /Currencies
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getOpenDrawsParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getOpenDrawsRes"
+  /lottery/getPayoutTable:
+    post:
+      tags:
+        - method
+      summary: Get payout tables
+      description: |
+        This endpoint returns the payout table for past draws.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Lottery/PayoutTable/{drawId}
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getPayoutTableParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getPayoutTableRes"
+  /lottery/getPreviousDraws:
+    post:
+      tags:
+        - authMethod
+      summary: Get all previous draws
+      description: |
+        This endpoint will return all of the previous (past) draws.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Lottery/Draws/GetPrevious
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getPreviousDrawsParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getPreviousDrawsRes"
+  /lottery/getProviders:
+    post:
+      tags:
+        - method
+      summary: Get lottery providers
+      description: >
+        This endpoint returns a list of lottery providers (e.g. `LottoWarehouse`
+        & `RisQ`).
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Lottery/Providers
+
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getProvidersRes"
+  /lottery/getUserBetResults:
+    post:
+      tags:
+        - authMethod
+      summary: Get a user’s bet results
+      description: >
+        This endpoint is practically identical to the `getUserBets` endpoint,
+        however it only returns the bet results on their own. This is used in
+        case one wishes to get the result of the bet without all of the
+        additional details regarding the bet itself.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Lottery/BetResults
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getUserBetResultsParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getUserBetResultsRes"
+  /lottery/getUserBets:
+    post:
+      tags:
+        - authMethod
+      summary: Get a user’s bets
+      description: >
+        This endpoint will return a list of bets that a user has affected on the
+        system
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Lottery/Bets
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getUserBetsParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getUserBetsRes"
+  /lottery/getWinningNumbersForDraw:
+    post:
+      tags:
+        - method
+      summary: Get the winning numbers for a draw
+      description: >
+        This endpoint returns the draw results (winning numbers) for a specified
+        past draw
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Lottery/WinningNumbers/{drawId}
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getWinningNumbersForDrawParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getWinningNumbersForDrawRes"
+  /lottery/subscribe:
+    post:
+      tags:
+        - authMethod
+      summary: Create subscription
+      description: >
+        This endpoint creates a lottery subscription based on the chosen user
+        number selection for the specific time interval.
+
+        Once subscription is created, unless it is canceled it will be renewed based on the time interval.
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Lottery/Subscribe
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/subscribeParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/subscribeRes"
+  /lottery/unsubscribe:
+    post:
+      tags:
+        - authMethod
+      summary: Remove subscription
+      description: |
+        This endpoint removes a lottery subscription based on the subscriptionId
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Lottery/UnSubscribe/${subscriptionId}
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/unsubscribeParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/unsubscribeRes"
+components:
+  schemas:
+    bulkBuyingParams:
+      type: object
+      properties:
+        lotteryId:
+          type: string
+          format: uuid
+        drawIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        lines:
+          type: array
+          items:
+            type: object
+            properties:
+              selections:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      example: main
+                    number:
+                      type: number
+                      example: 23
+        totalAmount:
+          type: number
+          example: 10
+    bulkBuyingPayload:
+      type: object
+      properties:
+        totalAmount:
+          type: number
+          example: 10
+        userSubscriptionEventId:
+          type: number
+          example: 3
+        subscriptionEventBets:
+          type: array
+          items:
+            type: number
+            example:
+              - 2384
+              - 2385
+              - 2386
+              - 2387
+    createBetParams:
+      type: object
+      properties:
+        lotteryId:
+          type: string
+          format: uuid
+        lines:
+          type: array
+          items:
+            type: object
+            properties:
+              drawId:
+                type: string
+                format: uuid
+              selections:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      example: main
+                    number:
+                      type: number
+                      example: 23
+    createBetPayload:
+      type: boolean
+      example: true
+    getParams:
+      type: object
+      properties:
+        lotteryId:
+          type: string
+          format: uuid
+    getPayload:
+      $ref: "#/components/schemas/Lottery"
+    getAllPayload:
+      type: array
+      items:
+        $ref: "#/components/schemas/Lottery"
+    getOpenDrawsParams:
+      type: object
+      properties:
+        countryCode:
+          type: string
+          example: DE
+        lotteryId:
+          type: string
+          format: uuid
+    getOpenDrawsPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          lotteryId:
+            type: string
+            format: uuid
+          currency:
+            type: string
+            example: EUR
+          draws:
+            type: array
+            items:
+              type: object
+              properties:
+                drawId:
+                  type: string
+                  format: uuid
+                dayOfWeek:
+                  type: number
+                  example: 6
+                drawDate:
+                  type: string
+                  format: date-time
+                ticketPrices:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      modelTypeCode:
+                        type: string
+                        example: INS
+                      price:
+                        type: number
+                        format: double
+                        example: 2.5
+                prizes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      tierLevel:
+                        type: number
+                        example: 1
+                      prize:
+                        type: number
+                        example: 7000
+    getPayoutTableParams:
+      type: object
+      properties:
+        dateFrom:
+          type: string
+          example: 2019-10-25
+        dateTo:
+          type: string
+          example: 2019-11-25
+        drawId:
+          type: string
+          format: uuid
+    getPayoutTablePayload:
+      type: object
+      properties:
+        currency:
+          type: string
+          example: EUR
+        payouts:
+          type: array
+          items:
+            type: object
+            properties:
+              prizeTierLevel:
+                type: number
+                example: 2
+              amount:
+                type: number
+                example: 450
+              winners:
+                type: number
+                example: 645
+    getPreviousDrawsParams:
+      type: object
+      properties:
+        dateFrom:
+          type: string
+          example: 2019-10-25
+        dateTo:
+          type: string
+          example: 2019-11-25
+    getPreviousDrawsPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          lotteryId:
+            type: string
+            format: uuid
+          draws:
+            type: array
+            items:
+              type: object
+              properties:
+                drawId:
+                  type: string
+                  format: uuid
+                drawDate:
+                  type: string
+                  format: date-time
+                winningNumbers:
+                  type: object
+                  properties:
+                    mainNumbers:
+                      type: array
+                      items:
+                        type: number
+                      example:
+                        - 5
+                        - 7
+                        - 10
+                        - 34
+                        - 44
+                    specialNumbers:
+                      type: array
+                      items:
+                        type: number
+                      example:
+                        - 2
+                        - 10
+    getProvidersPayload:
+      type: array
+      items:
+        type: string
+      example:
+        - LottoWarehouse
+        - RisQ
+    getUserBetResultsParams:
+      type: object
+      properties:
+        dateFrom:
+          type: string
+          example: 2019-10-25
+        dateTo:
+          type: string
+          example: 2019-11-25
+    getUserBetResultsPayload:
+      type: object
+      properties:
+        drawId:
+          type: string
+          format: uuid
+        prizeTierLevel:
+          type: number
+          example: 0
+        payoutCurrency:
+          type: string
+          example: EUR
+        payout:
+          type: number
+          example: 200
+    getUserBetsParams:
+      type: object
+      properties:
+        dateFrom:
+          type: string
+          example: 2019-10-25
+        dateTo:
+          type: string
+          example: 2019-11-25
+    getUserBetsPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          lotteryId:
+            type: string
+            format: uuid
+          drawId:
+            type: string
+            format: uuid
+          drawHappened:
+            type: string
+            format: date
+          createdDate:
+            type: string
+            format: date
+          drawDate:
+            type: string
+            format: date
+          lines:
+            type: array
+            items:
+              type: object
+              properties:
+                drawId:
+                  type: string
+                  format: uuid
+                selections:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: main
+                      number:
+                        type: number
+                        example: 2
+          results:
+            type: object
+            properties:
+              prizeTierLevel:
+                type: number
+                example: 3
+              currencyCode:
+                type: number
+                example: EUR
+              amount:
+                type: number
+                example: 200
+    getWinningNumbersForDrawParams:
+      type: object
+      properties:
+        drawId:
+          type: string
+          format: uuid
+    getWinningNumbersForDrawPayload:
+      type: object
+      properties:
+        mainNumbers:
+          type: array
+          items:
+            type: number
+          example:
+            - 5
+            - 7
+            - 10
+            - 34
+            - 44
+        specialNumbers:
+          type: array
+          items:
+            type: number
+          example:
+            - 2
+            - 10
+    Lottery:
+      type: object
+      properties:
+        lotteryId:
+          type: string
+          format: uuid
+        lotteryName:
+          type: string
+          example: euromillions
+        active:
+          type: boolean
+        currency:
+          type: string
+          example: EUR
+        scheduleCronExpression:
+          type: string
+          example: 0 19 * * 1,3,5
+        mainNumbersMin:
+          type: number
+          example: 1
+        mainNumbersMax:
+          type: number
+          example: 70
+        mainNumbersCount:
+          type: number
+          example: 5
+        specialNumbersMin:
+          type: number
+          example: 1
+        specialNumbersMax:
+          type: number
+          example: 20
+        specialNumbersCount:
+          type: number
+          example: 2
+        maxNumberOfLines:
+          type: number
+          example: 8
+        defaultNumberOfLines:
+          type: number
+          example: 3
+        jackpot:
+          type: number
+          example: 1000
+        description:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Random description
+        additionalDescription:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Random additional description
+        prizeInfoDescription:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Random prize description
+        prizeInfo:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: object
+              properties:
+                hits:
+                  type: string
+                odds:
+                  type: string
+                prize:
+                  type: string
+          example:
+            en:
+              - hits: ""
+                odds: ""
+                prize: ""
+        logo:
+          type: string
+          example: URL of the logo
+        background:
+          type: string
+          example: URL of the background image
+        segments:
+          type: array
+          items:
+            type: number
+          example:
+            - 1
+            - 2
+        languages:
+          type: array
+          items:
+            type: string
+          example:
+            - en
+            - sv
+        platform:
+          type: object
+          properties:
+            mobile:
+              type: boolean
+            desktop:
+              type: boolean
+        expiry:
+          type: string
+          nullable: true
+          example: null
+        dobFrom:
+          type: string
+          nullable: true
+          example: null
+        dobTo:
+          type: string
+          nullable: true
+          example: null
+        cutoffs:
+          type: array
+          items:
+            type: object
+            properties:
+              modelId:
+                type: number
+                example: 1
+              cutoffTimeUTC:
+                type: string
+                example: "22: 40"
+        cutoffBeforeMinutes:
+          type: number
+          example: 10
+        countries:
+          type: array
+          items:
+            type: string
+          nullable: true
+          example: null
+        start:
+          type: string
+          nullable: true
+          example: null
+        onSiteMarketing:
+          type: boolean
+          nullable: true
+          example: null
+        noOnSiteMarketing:
+          type: boolean
+          nullable: true
+          example: null
+        depositCount:
+          type: number
+          nullable: true
+          example: null
+        nextDraw:
+          type: object
+          properties:
+            drawId:
+              type: string
+              format: uuid
+            dayOfWeek:
+              type: number
+              example: 6
+            drawDate:
+              type: string
+              format: date
+            openForBets:
+              type: boolean
+            ticketPrices:
+              type: array
+              items:
+                type: object
+                properties:
+                  modelTypeCode:
+                    type: string
+                    example: INS
+                  price:
+                    type: number
+                    example: 2.5
+            prizes:
+              type: array
+              items:
+                type: object
+                properties:
+                  tierLevel:
+                    type: number
+                    example: 1
+                  price:
+                    type: number
+                    example: 2500000
+            jackpot:
+              type: number
+              example: 42000
+    subscribeParams:
+      type: object
+      properties:
+        lotteryId:
+          type: string
+          format: uuid
+        startDate:
+          type: string
+          format: date-time
+        lines:
+          type: array
+          items:
+            type: object
+            properties:
+              selections:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      example: main
+                    number:
+                      type: number
+                      example: 42
+        subscriptionName:
+          type: string
+          example: Demo subscription
+        intervalInDays:
+          type: number
+          example: 4
+        accountUUID:
+          type: string
+          format: uuid
+        paymentTypeId:
+          type: number
+          example: 6
+        amount:
+          type: number
+          example: 6.5
+    subscribePayload:
+      type: array
+      items:
+        type: object
+        properties:
+          createdDate:
+            type: string
+            format: date-time
+          subscriptionId:
+            type: string
+            format: uuid
+    unsubscribeParams:
+      type: object
+      properties:
+        subscriptionId:
+          type: string
+          format: uuid
+    unsubscribePayload:
+      type: boolen
+      example: true
+  responses:
+    bulkBuyingRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/bulkBuyingPayload"
+    createBetRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/createBetPayload"
+    getRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getPayload"
+    getAllRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getAllPayload"
+    getOpenDrawsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getOpenDrawsPayload"
+    getPayoutTableRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getPayoutTablePayload"
+    getPreviousDrawsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getPreviousDrawsPayload"
+    getProvidersRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getProvidersPayload"
+    getUserBetResultsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getUserBetResultsPayload"
+    getUserBetsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getUserBetsPayload"
+    getWinningNumbersForDrawRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getWinningNumbersForDrawPayload"
+    subscribeRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/subscribePayload"
+    unsubscribeRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/unsubscribePayload"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

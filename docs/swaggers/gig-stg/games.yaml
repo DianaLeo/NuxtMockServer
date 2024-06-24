@@ -1,0 +1,1269 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /games/W2GEvents:
+    post:
+      tags:
+        - authMethod
+      summary: List the W2G events for a user
+      description: >
+        List the W2G events for a user  \
+
+        \
+
+        By default the API end point to fetch W2G events is not enabled. To enable it, in the Back Office, from the Core Settings screen, the below setting must be set to true and cache should be flushed.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Games/w2gevents
+
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/W2GEventsRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/W2GEventsParams"
+        required: true
+  /games/browser:
+    post:
+      tags:
+        - private
+      summary: List available games by category
+      description: |
+        Returns and caches all of the categories and the contained games
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/browserParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/browserRes"
+  openapi:
+    "0": "3"
+    "1": .
+    "2": "0"
+    "3": .
+    "4": "1"
+  /games/checkForActiveSessions:
+    post:
+      tags:
+        - authMethod
+      summary: Get active game sessions
+      description: >
+        Returns a list of current active game sessions, or an empty list if
+        there are no active game sessions or if the feature hasn't been setup
+        for the brand.
+
+
+        Calls GIG Core endpoint `Games/CheckForActiveSessions`
+      responses:
+        default:
+          description: |
+            Active game sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    gameId:
+                      type: integer
+                      example: 1
+                    gameName:
+                      type: string
+                      example: sample string 1
+                    device:
+                      type: integer
+                      example: 1
+                    countryCode:
+                      type: integer
+                      example: sample string 2
+  info:
+    title: Get similar games
+    description: Get a list of similar games for a giving game ID  from the GRE.
+    version: "1"
+  /games/deleteActiveSessions:
+    post:
+      tags:
+        - authMethod
+      summary: Delete active game sessions
+      description: >
+        Removes all active game sessions for the user. This is used to prevent
+        having more than one session active at a time.
+
+
+        Calls GIG Core endpoint `Games/DeleteActiveSessions`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keepGameTypeIds:
+                  type: array
+                  items:
+                    type: integer
+                    description: The game type ids to delete active sessions for.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+        "500":
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: string
+                example: FUNCTIONALITY_NOT_APPLICABLE_FOR_COUNTRY
+  /games/favourite:
+    post:
+      tags:
+        - authMethod
+      summary: Add or delete a game from the user's favorite list
+      description: >
+        Adds or deletes a game to the user's favorite game list and returns the
+        updated list
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Games/Favorites/Delete/{gameId}
+
+        - /Games/Favorites/Add/{gameId}
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/favouriteParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/favouriteRes"
+  /games/get:
+    post:
+      tags:
+        - method
+      summary: Get game by slug
+      description: >
+        Returns game details and launchUrl as well. The enpoint applies filters
+        based on the current user's country and device.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Games/Details        *If cache is empty
+
+        - /Games/url/{gameId}
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getRes"
+  /games/getBySlug:
+    post:
+      tags:
+        - method
+      summary: Get game by slug
+      description: |
+        Returns game details stored in magic without applying any filter.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Games/Details     *If cache is empty
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getBySlugParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getBySlugRes"
+  /games/getFavourites:
+    post:
+      tags:
+        - authMethod
+      summary: Get the current user's favourite games
+      description: |
+        Get the current user's favourite games
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Games/Favorites/
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getFavouritesRes"
+  /games/getRecentWinners:
+    post:
+      tags:
+        - method
+      summary: Get all recent game winners
+      description: >
+        Get all recent game winners
+
+
+        The _device_ could be one of the followings:
+
+
+        1 = Desktop, 2 = iPad, 3 = iPhone, 4 = Android Phone, 5 = Windows Mobile 7, 6 = Windows Mobile 8, 7 = iPod, 8 = AndroidTablet
+
+
+        By default we pick it from user agents
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /v2/Games/RecentWinners
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getRecentWinnersParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getRecentWinnersRes"
+  /games/getRecommendedGames:
+    post:
+      tags:
+        - authMethod
+      summary: Return a list of recommended games for a user
+      description: >
+        Returns a list of game slugs that are the recommended games for the
+        current user. The order is important.
+
+        \
+
+        If the parameter deviceType is not set, the default will be used which is "All". The possible options are "All", "Desktop" and "Mobile".
+
+        \
+
+        It calls GiG Data Game recommendation engine under the hood.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deviceType:
+                  type: string
+                  enum:
+                    - All
+                    - Desktop
+                    - Mobile
+                  example: Desktop
+      responses:
+        default:
+          $ref: "#/components/responses/getRecommendedGamesRes"
+  /games/getSimilarGames:
+    post:
+      tags:
+        - authMethod
+      summary: Get similar games
+      description: Get a list of similar games from GRE for a given game ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                game_id:
+                  type: number
+                  example: 10616
+      responses:
+        "200":
+          description: A list of games
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: object
+                    properties:
+                      games:
+                        type: object
+                        example:
+                          "1":
+                            - 10616
+                            - 10617
+                            - 10618
+                            - 10619
+                            - 10620
+        "500":
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: error getting similar games from GRE
+  /games/getWithToken:
+    post:
+      tags:
+        - authMethod
+      summary: Get game by slug and verify GEO token
+      description: >
+        Works exactly the same as `games/get` with an additional validation for
+        GEO token. The GeoToken is obtained from the `/geoComply/decodeResponse`
+        endpoint.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /Authentication/IsLoggedIn
+
+        - /Games/Details              *If cache is empty
+
+        - /Games/url/{gameId}
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/getWithTokenParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/getWithTokenRes"
+  /games/jackpots:
+    post:
+      tags:
+        - method
+      summary: Get all jackpots
+      description: |
+        Get jackpots for all games
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/Games/jackpots/${currency}     *If cache is empty
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/jackpotsParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/jackpotsRes"
+  /games/launchUrl:
+    post:
+      tags:
+        - method
+      summary: Get the URL of the Game
+      description: |
+        Get the URL of the Game to be used in the iFrame or to redirect to
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Games/url/{gameId}
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/launchUrlParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/launchUrlRes"
+  /games/launchUrlIOS:
+    post:
+      tags:
+        - method
+      summary: Get the URL of a given game for iOS devices
+      description: |
+        Get the URL of a given game to be launch as a native iOS app
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /Games/url/{gameId}
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/launchUrlParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/launchUrlRes"
+  /games/setpinboard:
+    post:
+      tags:
+        - authMethod
+      summary: Set pinboard data
+      description: >
+        Sets pinboard info for the current authenticated user. The `slug` is the
+        only required property in the params, the client can save anything else.
+
+
+        \
+
+        This endpoint does NOT call GIG Core API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/setpinboardParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/setpinboardRes"
+components:
+  schemas:
+    W2GEventsParams:
+      type: object
+      required:
+        - from
+        - to
+      properties:
+        from:
+          type: string
+          example: 2018-10-01
+        to:
+          type: string
+          example: 2018-11-01
+    W2GEventsParamsPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          userId:
+            type: integer
+            example: 4557554
+          transactionId:
+            type: integer
+            example: 123456789
+          gameType:
+            type: string
+            example: Slot Machine
+          gameTitle:
+            type: string
+            example: Starburst
+          transactionDate:
+            type: string
+            example: 2018-11-12T14:30:46.7177353+00:00
+          wager:
+            type: number
+            format: float
+            example: 8.1
+          win:
+            type: number
+            format: float
+            example: 80.9
+    browserParams:
+      type: object
+      properties:
+        lang:
+          type: string
+          example: en
+        mobile:
+          type: boolean
+          example: true
+    browserPayload:
+      type: array
+      items:
+        $ref: "#/components/schemas/browserCategory"
+    browserCategory:
+      type: object
+      properties:
+        lang:
+          type: string
+          example: en
+        rows:
+          type: number
+          example: 10
+        description:
+          type: string
+          example: Random description
+        modified:
+          type: number
+          example: 1559041061087
+        id:
+          type: string
+          example: GUID
+        games:
+          type: array
+          items:
+            $ref: "#/components/schemas/browserGame"
+        key:
+          type: string
+          example: 553758d94f59677ce044829c
+        position:
+          type: number
+          example: 1
+        main:
+          type: boolean
+          example: true
+        slug:
+          type: string
+          example: all-games
+        name:
+          type: string
+          example: All games
+        title:
+          type: string
+          example: All games
+        images:
+          type: object
+          properties:
+            thumbnail:
+              type: string
+              example: lg/all-games.jpg
+            background:
+              type: string
+              example: bg/all-games.jpg
+        mobile:
+          type: boolean
+          example: false
+        desktop:
+          type: boolean
+          example: false
+        hide:
+          type: boolean
+          example: false
+    browserGame:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Rainbow Ryan
+        promo:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Rainbow Ryan
+        images:
+          type: object
+          properties:
+            logo:
+              type: string
+              example: logo/rainbow-ryan.jpg
+            portrait:
+              type: string
+              example: pt/rainbow-ryan.jpg
+            landscape:
+              type: string
+              example: ls/rainbow-ryan.jpg
+        vendor:
+          type: string
+          example: Yggdrasil
+        providerId:
+          type: string
+          example: "11125"
+        id:
+          type: string
+          example: GUID
+        platform:
+          type: object
+          properties:
+            desktop:
+              type: boolean
+            mobile:
+              type: boolean
+        slug:
+          type: string
+          example: rainbow-ryan
+        tags:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            en:
+              - Rainbow Ryan
+        dimensions:
+          type: object
+          properties:
+            width:
+              type: number
+              example: 1680
+            height:
+              type: number
+              example: 945
+        desc:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Game description
+        cats:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            en:
+              - Rainbow Ryan
+              - 2-slots-mobile
+        searchTerms:
+          type: string
+          example: ""
+        gameId:
+          type: number
+          example: 10708
+        customVendor:
+          type: string
+          example: Yggdrasil
+        igcTags:
+          type: array
+          items:
+            type: string
+          example:
+            - BlockDemoWithChildTheme
+        igcDevices:
+          type: string
+          example: Desktop,iPad,iPhone,Android Phone,WM7,WM8,iPod,Android Tablet
+    favouriteParams:
+      type: object
+      properties:
+        gameId:
+          type: number
+          example: 2453
+        remove:
+          type: boolean
+    favouritePayload:
+      type: array
+      items:
+        type: object
+        properties:
+          Id:
+            type: number
+            example: 1
+          GameId:
+            type: number
+            example: 2453
+          Created:
+            type: string
+            format: date-time
+    getParams:
+      type: object
+      properties:
+        slug:
+          type: string
+          example: spina-colada
+        realMoney:
+          type: boolean
+          example: false
+        lang:
+          type: string
+          example: en
+    getPayload:
+      type: object
+      properties:
+        description:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Random description
+        title:
+          type: string
+          example: Spina Colada
+        platform:
+          type: object
+          properties:
+            desktop:
+              type: boolean
+            mobile:
+              type: boolean
+        tags:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            en:
+              - tag1
+              - tag2
+        promo:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Random promotional description
+            de: Spina Colada
+        vendor:
+          type: string
+          example: Yggdrasil
+        providerId:
+          type: string
+          example: "11060"
+        background:
+          type: string
+          example: cdn.kaboo.com/img/games/bgs/spina-colada.jpg
+        groupIds:
+          type: array
+          items:
+            type: string
+          example:
+            - 7339
+        modified:
+          type: number
+          example: 1498201202787
+        modifiedBy:
+          type: string
+          example: alexbetit
+        id:
+          type: string
+          format: uuid
+        categories:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            en:
+              - 2-slots
+              - 2-slots-mobile
+              - yggdrasil
+              - yggdrasil-mobile
+        slug:
+          type: string
+          example: spina-colada
+        dimensions:
+          type: object
+          properties:
+            width:
+              type: number
+              example: 1680
+            height:
+              type: number
+              example: 945
+        gameId:
+          type: number
+          example: 11060
+        customVendor:
+          type: string
+          example: Yggdrasil
+        igcTags:
+          type: array
+          items:
+            type: string
+          example:
+            - test1
+        igcDevices:
+          type: string
+          example: Desktop,iPad,iPhone,Android Phone,WM7,WM8,iPod,Android Tablet
+        launchUrl:
+          type: string
+          example: https://games-KabooStaging.igamingcloud.com/en/11060
+    getBySlugParams:
+      type: object
+      properties:
+        slug:
+          type: string
+          example: spina-colada
+    getBySlugPayload:
+      type: object
+      properties:
+        freeSpinValue:
+          type: number
+          example: 1.5
+        description:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Random description
+        title:
+          type: string
+          example: Spina Colada
+        platform:
+          type: object
+          properties:
+            desktop:
+              type: boolean
+            mobile:
+              type: boolean
+        tags:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            en:
+              - tag1
+              - tag2
+        promo:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Random promotional description
+            de: Spina Colada
+        vendor:
+          type: string
+          example: Yggdrasil
+        providerId:
+          type: string
+          example: "11060"
+        background:
+          type: string
+          example: cdn.kaboo.com/img/games/bgs/spina-colada.jpg
+        groupIds:
+          type: array
+          items:
+            type: string
+          example:
+            - 7339
+            - fruitshop_not_mobile_sw
+        modified:
+          type: number
+          example: 1498201202787
+        modifiedBy:
+          type: string
+          example: alexbetit
+        id:
+          type: string
+          format: uuid
+        categories:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            en:
+              - 2-slots
+              - 2-slots-mobile
+              - yggdrasil
+              - yggdrasil-mobile
+        slug:
+          type: string
+          example: spina-colada
+        dimensions:
+          type: object
+          properties:
+            width:
+              type: number
+              example: 1680
+            height:
+              type: number
+              example: 945
+    getFavouritesPayload:
+      type: object
+      properties:
+        Id:
+          type: number
+          example: 1
+        GameId:
+          type: number
+          example: 2
+        Created:
+          type: string
+          example: 2019-09-02T09:15:06.5603418+00:00
+    getRecentWinnersParams:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 100
+          default: 100
+        minimumWin:
+          type: number
+          example: 7
+          default: 7
+        maximumWin:
+          type: number
+          example: 1.1
+        device:
+          type: integer
+          example: 1
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+        gameId:
+          type: integer
+          example: 1
+    getRecentWinnersPayload:
+      type: object
+      properties:
+        winner:
+          type: string
+          example: John Snow
+        username:
+          type: string
+          example: john.snow
+        currency:
+          type: string
+          example: EUR
+        amount:
+          type: number
+          example: 1.1
+        time:
+          type: string
+          example: ""
+        gameId:
+          type: number
+          example: 1763
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: ""
+        game:
+          type: object
+          properties:
+            slug:
+              type: string
+              example: 1-can-2-can
+            shortName:
+              type: string
+              example: 1 Can 2 Can
+            logo:
+              type: string
+              example: 1-can-2-can-220x220.jpg
+    getRecommendedGamesPayload:
+      type: array
+      items:
+        type: string
+      example:
+        - route-777
+        - mysteri-fruit
+    getWithTokenParams:
+      type: object
+      properties:
+        slug:
+          type: string
+          example: spina-colada
+        realMoney:
+          type: boolean
+          example: false
+        lang:
+          type: string
+          example: en
+        geoToken:
+          type: string
+          example: 6d142bd4-9c5e-4e57-9209-2ad2455c45da
+    getWithTokenPayload:
+      type: object
+      properties:
+        description:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Random description
+        title:
+          type: string
+          example: Spina Colada
+        platform:
+          type: object
+          properties:
+            desktop:
+              type: boolean
+            mobile:
+              type: boolean
+        tags:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            en:
+              - tag1
+              - tag2
+        promo:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            en: Random promotional description
+            de: Spina Colada
+        vendor:
+          type: string
+          example: Yggdrasil
+        providerId:
+          type: string
+          example: "11060"
+        background:
+          type: string
+          example: cdn.kaboo.com/img/games/bgs/spina-colada.jpg
+        groupIds:
+          type: array
+          items:
+            type: string
+          example:
+            - 7339
+        modified:
+          type: number
+          example: 1498201202787
+        modifiedBy:
+          type: string
+          example: alexbetit
+        id:
+          type: string
+          format: uuid
+        categories:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            en:
+              - 2-slots
+              - 2-slots-mobile
+              - yggdrasil
+              - yggdrasil-mobile
+        slug:
+          type: string
+          example: spina-colada
+        dimensions:
+          type: object
+          properties:
+            width:
+              type: number
+              example: 1680
+            height:
+              type: number
+              example: 945
+        gameId:
+          type: number
+          example: 11060
+        customVendor:
+          type: string
+          example: Yggdrasil
+        igcTags:
+          type: array
+          items:
+            type: string
+          example:
+            - test1
+        igcDevices:
+          type: string
+          example: Desktop,iPad,iPhone,Android Phone,WM7,WM8,iPod,Android Tablet
+        launchUrl:
+          type: string
+          example: https://games-KabooStaging.igamingcloud.com/en/11060
+    jackpotsParams:
+      type: object
+      properties:
+        currency:
+          type: string
+          example: EUR
+    jackpotsPayload:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: object
+          properties:
+            amount:
+              type: number
+              format: decimal
+      example:
+        "4819":
+          - amount: 44474296.9
+          - amount: 941.3
+    launchUrlParams:
+      type: object
+      properties:
+        gameId:
+          type: number
+          example: 1234
+        lang:
+          type: string
+          example: en
+        realMoney:
+          type: boolean
+          example: true
+        variantId:
+          type: number
+          example: 1
+        geoPackage:
+          type: string
+          required: false
+          example: 0L+vFKKm74Dsz/...cw+OSYM7g==
+          description: Encoded token from GeoComply (if feature is enabled)
+    launchUrlPayload:
+      type: string
+      example: https://subdomain.exampledomain.com/game/18393?launchNativeApp=true
+    setpinboardParams:
+      type: object
+      properties:
+        pinboard:
+          type: array
+          items:
+            type: object
+            properties:
+              slug:
+                type: string
+                example: spina-colada
+              key:
+                type: string
+                example: value
+    setpinboardPayload:
+      type: string
+      nullable: true
+      example: null
+  responses:
+    W2GEventsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/W2GEventsParamsPayload"
+    browserRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/browserPayload"
+    favouriteRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/favouritePayload"
+    getRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getPayload"
+    getBySlugRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getBySlugPayload"
+    getFavouritesRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getFavouritesPayload"
+    getRecentWinnersRes:
+      description: Object containing optional Game ID property and additional filters
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getRecentWinnersPayload"
+    getRecommendedGamesRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getRecommendedGamesPayload"
+    getWithTokenRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getWithTokenPayload"
+    jackpotsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/jackpotsPayload"
+    launchUrlRes:
+      description: Object containing optional Game ID property and additional filters
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/launchUrlPayload"
+    setpinboardRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/setpinboardPayload"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

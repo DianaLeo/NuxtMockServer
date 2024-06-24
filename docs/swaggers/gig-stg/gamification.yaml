@@ -1,0 +1,241 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  info:
+    title: Gamification service API
+  /gamification/collectGameClickEvents:
+    post:
+      tags:
+        - authMethod
+      summary: Collect the game click events
+      description: >
+        Collect click games events coming from the frontend. This data can be
+        used for game reccomendation as an example
+
+
+        \
+
+        This endpoint does the following GIG Data calls:
+
+        ```
+
+        - /closed-loop-metrics
+
+        ```
+      requestBody:
+        description: The payload consists of event, game, player and browser data.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/request"
+        required: true
+      responses:
+        default:
+          description: If the request is sucessful, the response will be an object  only
+            with the key sucess. If the request failed, the response will
+            contain only the key err with the actual error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  err:
+                    type: string
+  /gamification/leaderboard:
+    post:
+      tags:
+        - method
+      summary: Returns leaderboard-like result
+      description: >
+        Returns leaderboard-like result of participants based on the provided in
+        the request achievement and the respectful participants value. The
+        endpoint can limit the leaderboard result by sending the "limit"
+        property or by using pagination. The endpoint has a 30s cache.
+
+
+        \
+
+        This endpoint does NOT call GIG Core API
+      responses:
+        default:
+          $ref: "#/components/responses/leaderboardRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/leaderboardParams"
+        required: true
+components:
+  schemas:
+    request:
+      type: object
+      properties:
+        gameClickEvents:
+          type: array
+          items:
+            type: object
+            properties:
+              event:
+                type: string
+                example: GameClick
+              gameCategory:
+                type: string
+                example: Last Played
+              categoryPage:
+                type: string
+                example: Homepage
+              categoryPageUrl:
+                type: string
+                example: en/casino/
+              gamePlayOption:
+                type: string
+                example: PlayforFun
+              gameName:
+                type: string
+                example: Starburst
+              gameId:
+                type: string
+                example: bc848af1-c19e-4b9f-8dfb-4b7e284c930a
+              gameUrl:
+                type: string
+              gameThumbnailUrl:
+                type: string
+              gameFavourite:
+                type: string
+                example: Yes
+              userAgent:
+                type: string
+                example: Desktop
+              gameResolution:
+                type: string
+              playerState:
+                type: string
+                example: Logged In
+    leaderboardEntry:
+      type: object
+      properties:
+        userId:
+          type: number
+          description: available only if the request is made by logged in user and the
+            object is for the current user
+          nullable: true
+          example: 3040337
+        userName:
+          type: string
+        leaderboardName:
+          type: string
+        achievements:
+          type: object
+          properties:
+            achievementNameAsKey:
+              type: integer
+              description: achievement value
+              format: number
+        achievementsVersion:
+          type: object
+          properties:
+            achievementNameAsKey:
+              type: integer
+              description: achievement version number
+              format: number
+        lastReward:
+          type: object
+          properties:
+            achievementNameAsKey:
+              nullable: true
+              description: if the user has no reward for tht achievement yet, the object value
+                will be null. Virtual currencies (like echoes) are not supported
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 2-credits
+                  description: reward name
+                id:
+                  type: string
+                  example: 60245618-e8e0-450c-aee8-f120ebb8d62f
+                  description: reward id
+    leaderboardParams:
+      type: object
+      required:
+        - achievement
+      properties:
+        achievement:
+          type: string
+          example: ach_name
+        limit:
+          type: number
+          example: 10
+          description: limit the entries in the leaderboard result. The default value is 100
+        paginated:
+          type: boolean
+          example: true
+          description: FALSE by default. If true, the response will be in paginated format
+        page:
+          description: if empty, the value will be 1 - requires "paginated" to be true
+          type: number
+          example: 2
+        itemsPerPage:
+          description: if empty, the value will be 20. The value cannot be bigger than 100
+            - requires "paginated" to be true
+          type: number
+          example: 10
+    leaderboardDefaultResPayload:
+      type: array
+      items:
+        $ref: "#/components/schemas/leaderboardEntry"
+    leaderboardPaginatedPayload:
+      type: object
+      properties:
+        page:
+          type: number
+          example: 1
+        itemsPerPage:
+          type: number
+          example: 20
+        totalItems:
+          type: number
+          example: 100
+        items:
+          $ref: "#/components/schemas/leaderboardEntry"
+  responses:
+    leaderboardRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: "#/components/schemas/leaderboardDefaultResPayload"
+              - $ref: "#/components/schemas/leaderboardPaginatedPayload"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

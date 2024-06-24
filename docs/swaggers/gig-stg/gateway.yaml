@@ -1,0 +1,352 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  openapi:
+    "0": "3"
+    "1": .
+    "2": "0"
+    "3": .
+    "4": "0"
+  /create-user-document:
+    post:
+      tags:
+        - authMethod
+        - corex
+      summary: Upload CoreX document
+      description: >
+        It uploads one KYC document. The following file formats are accepted -
+        png, pdf, jp(e)g, bmp, gif.
+
+
+        It's important that the file is sent last on the payload.
+
+
+        The possible input values are listed below:
+
+
+        | Doc Type            | Doc Number required     | Doc Expiration required | Possible Sides |
+
+        | ---- | --------------- | ------------------- | ----- |
+
+        national_identity_card | true | true | ["FRONT", "BACK"]
+
+        passport | true | true | ["FRONT"]
+
+        driving_license | true | true | ["FRONT", "BACK"]
+
+        gov_photo_id | true | true | ["FRONT", "BACK"]
+
+        military_id | true | true | ["FRONT", "BACK"]
+
+        social_security_card | true | true | ["FRONT", "BACK"]
+
+        resident_card | true | true | ["FRONT", "BACK"]
+
+        alien_registration_card | true | true | ["FRONT", "BACK"]
+
+        utility_bill | false | false | ["FRONT"]
+
+        bank_statement | false | false | ["FRONT"]
+
+        credit_card_statement | false | false | ["FRONT"]
+
+        property_tax_receipt | false | false | ["FRONT"]
+
+        voter_registration_card | false | false | ["FRONT"]
+
+        insurance_bill | false | false | ["FRONT"]
+
+        insurance_policy | false | false | ["FRONT"]
+
+        residence_permit | true | true | ["FRONT"]
+
+        lease_agreement | false | false | ["FRONT"]
+
+        payslip | false | false | ["FRONT"]
+
+        employment_letter | false | false | ["FRONT"]
+
+        tax_returns | false | false | ["FRONT"]
+
+        investment_statement | false | false | ["FRONT"]
+
+        insurance_proceeds_contract | false | false | ["FRONT"]
+
+        loan_contract | false | false | ["FRONT"]
+
+        grant_of_probate | false | false | ["FRONT"]
+
+        contract_of_sale | false | false | ["FRONT"]
+
+        asset_ownership | false | false | ["FRONT"]
+
+        financial_statement | false | false | ["FRONT"]
+
+        gift_letter | false | false | ["FRONT"]
+
+        questionnaire | false | false | ["FRONT"]
+      parameters:
+        - in: query
+          name: fieldsQty
+          schema:
+            type: integer
+            example: 1
+          description: The number of fields sent in the form. If the value doesn't match,
+            additional fields won't be parsed.
+        - in: query
+          name: filesQty
+          schema:
+            type: integer
+            example: 1
+          description: The number of files sent in the form. If the value doesn't match,
+            additional images won't be uploaded.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/createUserDocumentPayload"
+      responses:
+        default:
+          description: Upload result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: string
+                    example: bc7ab341-3636-4a40-9d1b-7c6086d0b382
+                  err:
+                    type: string
+  /requestAndUploadKYC:
+    post:
+      tags:
+        - authMethod
+      summary: Open KYC slots and upload document
+      description: >
+        It uploads one KYC document. Following file formats are accepted - png,
+        pdf, jp(e)g, bmp, gif.
+
+
+        It's important that the file is sent last on the payload.
+      parameters:
+        - in: query
+          name: fieldsQty
+          schema:
+            type: integer
+            example: 1
+          description: The number of fields sent in the form. If the value doesn't match,
+            additional fields won't be parsed.
+        - in: query
+          name: filesQty
+          schema:
+            type: integer
+            example: 1
+          description: The number of files sent in the form. If the value doesn't match,
+            additional images won't be uploaded.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/requestAndUploadKYCPayload"
+      responses:
+        default:
+          description: Upload result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+  /uploadKYC:
+    post:
+      tags:
+        - authMethod
+      summary: Upload KYC documents
+      description: >
+        It uploads one KYC document. Following file formats are accepted - png,
+        pdf, jp(e)g, bmp, gif.
+
+
+        When type SOWD is selected SOWDType field is nesessary. 
+
+
+        The type photoID can be used in two ways - either providing only type photoID and a file or providing type photoID, docType (1 - ID Card, 2 - Passport, 3 - Driving licence, 4 - other), docNo, docExpiryDate and a file.
+
+
+        It's important that the files are sent last on the payload.
+      parameters:
+        - in: query
+          name: fieldsQty
+          schema:
+            type: integer
+            example: 1
+          description: The number of fields sent in the form. If the value doesn't match,
+            additional fields won't be parsed.
+        - in: query
+          name: filesQty
+          schema:
+            type: integer
+            example: 1
+          description: The number of files sent in the form. If the value doesn't match,
+            additional images won't be uploaded.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/payload"
+      responses:
+        default:
+          description: Upload result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+components:
+  schemas:
+    createUserDocumentPayload:
+      type: object
+      properties:
+        Type:
+          type: string
+          example: national_identity_card
+        Side:
+          type: string
+          example: FRONT
+        DocumentNumber:
+          type: string
+          example: 123123123
+        ExpiresOn:
+          type: string
+          format: date-time
+          example: 2024-07-30T00:00:00Z
+        Data:
+          type: string
+          format: binary
+      required:
+        - Data
+        - Type
+        - Side
+    requestAndUploadKYCPayload:
+      type: object
+      properties:
+        documentType:
+          type: string
+          enum:
+            - photoID
+            - address
+            - payment
+            - SOWD
+            - SOF
+        file:
+          type: string
+          format: binary
+      required:
+        - type
+        - file
+    payload:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - photoID
+            - address
+            - payment
+            - SOWD
+            - SOF
+        SOWDType:
+          type: string
+          enum:
+            - Contract of Sale
+            - Dividend contract note
+            - Letter showing dividend details sign by warranted accountant
+            - Set of company accounts showing dividend details
+            - Bank statement showing receipt of funds and name of company
+            - Signed letter from lawyer or notary
+            - Document providing proof of shareholding
+            - Investment certificates, contract notes, or statements
+            - Written confirmation from investment company
+            - Signed letter from warranted accountant detailing funds
+            - Court order or separation agreement and verification that funds
+              originated from account of former spouse
+            - Letter from relevant organisation
+            - Certificate of winnings
+            - Bank statement showing funds deposited by company
+            - Copies of media coverage
+            - Pension statement
+            - Letter from warranted accountant
+            - Letter from annuity provider
+            - Bank statement showing receipt of last pension income
+            - Signed letter from lawyer
+            - Signed letter from warranted accountant
+            - Copy of contract of sale and bank statement
+            - Document showing who gave the gift and relationship
+            - Letter from insurance provider
+            - Loan agreement,
+            - Recent loan statement
+            - Payslip
+            - Work contract showing yearly salary
+        docType:
+          type: integer
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+          example: 1
+        docNo:
+          type: integer
+          example: 1234
+        docExpiryDate:
+          type: string
+          example: 2021/12/31
+        file:
+          type: string
+          format: binary
+      required:
+        - type
+        - file
+  responses: {}
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

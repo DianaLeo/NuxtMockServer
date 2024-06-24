@@ -1,0 +1,1031 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /responsiblegaming/addPanicSelfExclusion:
+    post:
+      tags:
+        - authMethod
+      summary: Panic self-exclusion for a user
+      description: |
+        Add a self-exclusion for the current authenticated user.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /SelfExclusion/AddPanicSelfExclusion
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/addPanicSelfExclusionRes"
+  /responsiblegaming/addUserLimitsV2:
+    post:
+      tags:
+        - authMethod
+      summary: Adds multiple limits for a user
+      description: |
+        It adds multiple limits for a user \
+        \
+        Paramater _duration_ is required if type of the limit is different than:
+        * session
+        * stake per session
+        * max stake per bet
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/Limits/AddUserLimits
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/addUserLimitsV2Res"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addUserLimitsV2Params"
+        required: true
+  /responsiblegaming/awaitingUserLimitConfirmation:
+    post:
+      tags:
+        - authMethod
+      summary: List the limits that need to be confirmed by the user
+      description: >
+        List the limits that need to be confirmed by the user  \
+
+        \
+
+        When a player makes a change to a responsible gaming limit (to increase or remove it), the
+
+        operator must provide an option on the website so that the player can confirm that they wanted to
+
+        take the action. The player can be shown this confirmation the next time they login after the cool
+
+        down period has elapsed. The existing limit must stay in place on the player’s account until the
+
+        player has taken the affirmative action. \
+
+        \
+
+        Please note this enhancement only applies to **UKGC brands**.
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /v2/ResponsibleGaming/Limits/Confirm
+
+        - /v2/ResponsibleGaming/Limits/GetLimits
+
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/awaitingUserLimitConfirmationRes"
+  /responsiblegaming/confirmUserLimits:
+    post:
+      tags:
+        - authMethod
+      summary: Confirm outstanding limits
+      description: |
+        Confirm outstanding limits for the current user\
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/Limits/Confirm
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/confirmUserLimitsRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/confirmUserLimitsParams"
+        required: true
+  /responsiblegaming/enableSelfExclusionCoolOff:
+    post:
+      tags:
+        - authMethod
+      summary: Adds a timeout for a user
+      description: >
+        Adds a timeout for a user \
+
+        \
+
+        The purpose of a time out is so that players can prevent themselves playing for a specified period \
+
+        \
+
+        Timeouts are NOT propagated to other brands running on the same license
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /v2/ResponsibleGaming/Timeout/AddTimeout
+
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/enableSelfExclusionCoolOffRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/enableSelfExclusionCoolOffParams"
+        required: true
+  /responsiblegaming/enableSelfExclusionV2:
+    post:
+      tags:
+        - authMethod
+      summary: Adds a self-exclusion for a user
+      description: |
+        Add a self-exclusion for the current authenticated user.
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/SelfExclusion/AddSelfExclusion
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/enableSelfExclusionV2Res"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/enableSelfExclusionV2Params"
+        required: true
+  /responsiblegaming/getLimitsV2:
+    post:
+      tags:
+        - authMethod
+      summary: Gets the list of available limits and limits' durations
+      description: |
+        It returns the object with 2 lists:
+        1. List of available limits, e.g.:
+        * Deposit
+        * Wagering (Casino)
+        * Net Loss (Casino)
+        * Wagering (Sports)
+        * Net Loss(Sports)
+        * Session
+        * StakePerSession
+        * MaxStakePerBet
+        2. List of available durations, e.g.:
+        * _24Hours
+        * _1Week
+        * _1Month
+        * _3Months
+        * NoDuration
+        * Session
+
+         \
+         This endpoint does the following GIG Core calls:
+         ```
+         - /v2/ResponsibleGaming/Limits/GetLimits
+         ```
+      responses:
+        default:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getLimitsV2Payload"
+      deprecated: false
+  /responsiblegaming/getSelfExclusionPeriodsV2:
+    post:
+      tags:
+        - authMethod
+      summary: Gets the list of self exclusion categories and their durations
+      description: |
+        It returns the list of self exclusion categories together with
+        the details of their durations (ID, Days, Months)
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/SelfExclusion/LegislationCategories
+        - /v2/ResponsibleGaming/SelfExclusion/LegislationDurations
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getSelfExclusionPeriodsV2Res"
+  /responsiblegaming/getSelfExclusionURL:
+    post:
+      tags:
+        - authMethod
+      summary: Gets a URL for self-exclusion
+      description: |
+        
+        
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v3/ResponsibleGaming/SelfExclusion/Redirect
+        ```
+      responses:
+        default:
+          description: If account contains all mandatory fields to get self-exclusion URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getSelfExclusionURLPayload"
+        mandatory_incorrect_data_missing:
+          description: If mandatory data is missing in user's account
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: string
+                    example: MANDATORY_INCORRECT_DATA_MISSING
+  /responsiblegaming/getTimeoutCategories:
+    post:
+      tags:
+        - authMethod
+      summary: Gets the list of timeout categories
+      description: |
+        It returns the list of timeout categories
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/Timeout/Categories
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getTimeoutCategoriesRes"
+  /responsiblegaming/getTimeoutCategoriesV2:
+    post:
+      tags:
+        - authMethod
+      summary: Gets the list of timeout categories
+      description: |
+        It returns the list of timeout categories
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/Timeout/LegislationCategories
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getTimeoutCategoriesRes"
+  /responsiblegaming/getTimeoutDurations:
+    post:
+      tags:
+        - authMethod
+      summary: Gets the list of timeout durations
+      description: |
+        It returns the list of timeout durations
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/Timeout/Durations
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getTimeoutDurationsRes"
+  /responsiblegaming/getTimeoutDurationsV2:
+    post:
+      tags:
+        - authMethod
+      summary: Gets the list of timeout durations
+      description: |
+        It returns the list of timeout durations
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/Timeout/LegislationDurations
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getTimeoutDurationsRes"
+  /responsiblegaming/getUserLimitsHistoryV2:
+    post:
+      tags:
+        - authMethod
+      summary: Gets the history of the user's limits
+      description: |
+        It returns the history of the user's limits for the past 6 months
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/Limits/GetUserLimitHistory
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/getUserLimitsHistoryV2Res"
+  /responsiblegaming/getUserLimitsV2:
+    post:
+      tags:
+        - authMethod
+      summary: Gets the current user's limits
+      description: |
+        It returns the object with 2 lists:
+          * activeLimits
+          * futureLimits
+
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/Limits/GetUserLimits
+        ```
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                includeRemainingAmount:
+                  required: false
+                  type: boolean
+                  example: true
+                  description: >
+                    If true, the response will include the remaining amount for
+                    each limit.
+
+                    If false or not included, the response will not include the remaining amount for each limit.
+      responses:
+        default:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getUserLimitsV2Payload"
+  /responsiblegaming/removeLimit:
+    post:
+      tags:
+        - authMethod
+      summary: Allows a user to cancel a limit based on limitId. It assumes the
+        regulator enables such feature.
+      description: |
+        
+        
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/Limits/RemoveUserLimit?limitId={limitId}
+        ```
+      responses:
+        default:
+          description: If the limit is successfully removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/removeLimitPayload"
+        operation_not_allowed:
+          description: If the operation is not allowed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    example: OPERATION_NOT_ALLOWED
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - limitId
+              properties:
+                limitId:
+                  type: integer
+                  example: 121
+        required: true
+  /responsiblegaming/setUserLimitsV2:
+    post:
+      tags:
+        - authMethod
+      summary: Adds multiple limits for a user
+      description: |
+        It adds multiple limits for a user \
+        \
+        Paramater _duration_ is required if type of the limit is different than:
+        * session
+        * stake per session
+        * max stake per bet
+        \
+        This endpoint does the following GIG Core calls:
+        ```
+        - /v2/ResponsibleGaming/Limits/SetUserLimits
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/setUserLimitsV2Res"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/setUserLimitsV2Params"
+        required: true
+  /responsiblegaming/userPlayStatsAndLimits:
+    post:
+      tags:
+        - authMethod
+      summary: Returns deposit limits and total win/loss
+      description: >
+        Returns the configured deposit limits information and the total win/loss
+        during the past period of input months (the value can be between 1-12).
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /v2/ResponsibleGaming/userPlayStatsAndLimits
+
+        ```
+      responses:
+        default:
+          $ref: "#/components/responses/userPlayStatsAndLimitsRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userPlayStatsAndLimitsParams"
+        required: true
+components:
+  schemas:
+    addPanicSelfExclusionPayload:
+      type: object
+      properties:
+        res:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+    addUserLimitsV2_limitModel:
+      type: object
+      required:
+        - type
+        - duration
+        - limitAmount
+      properties:
+        type:
+          type: integer
+          example: 1
+        duration:
+          type: integer
+          example: 1
+        limitAmount:
+          type: integer
+          example: 100
+    addUserLimitsV2Params:
+      type: array
+      items:
+        $ref: "#/components/schemas/addUserLimitsV2_limitModel"
+    addUserLimitsV2Payload:
+      type: object
+      properties:
+        res:
+          type: boolean
+          example: true
+    awaitingUserLimitConfirmationResPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          userLimitId:
+            type: number
+            example: 1
+          limitFrom:
+            type: number
+            example: 1.1
+          limitTo:
+            type: number
+            example: 1
+          limitType:
+            type: object
+            properties:
+              limitType:
+                type: number
+                example: 1
+              name:
+                type: string
+                example: ""
+              visible:
+                type: boolean
+                example: true
+          duration:
+            type: object
+            properties:
+              durationType:
+                type: number
+                example: 1
+              name:
+                type: string
+                example: ""
+          createdDate:
+            type: string
+            example: 2018-11-30T14:48:42.7360581+00:00
+          startDate:
+            type: string
+            example: 2018-11-30T14:48:42.7360581+00:00
+          endDate:
+            type: string
+            example: 2018-11-30T14:48:42.7360581+00:00
+    confirmUserLimitsParams:
+      type: array
+      items:
+        type: object
+        properties:
+          userLimitId:
+            type: integer
+            example: 1
+          isAccepted:
+            type: boolean
+            example: true
+    confirmUserLimitsPayload:
+      type: boolean
+      example: true
+    enableSelfExclusionCoolOffParams:
+      type: object
+      required:
+        - selfExclusionCategoryId
+      properties:
+        selfExclusionCategoryId:
+          type: integer
+          example: 1
+    enableSelfExclusionCoolOffPayload:
+      type: object
+      properties:
+        res:
+          type: boolean
+          example: true
+    enableSelfExclusionV2Params:
+      type: object
+      required:
+        - selfExclusionCategoryId
+      properties:
+        selfExclusionCategoryId:
+          type: integer
+          example: 1
+        blockReason:
+          type: integer
+          example: 1
+    enableSelfExclusionV2Payload:
+      type: object
+      properties:
+        res:
+          type: boolean
+          example: true
+    getLimitsV2Payload:
+      type: object
+      properties:
+        res:
+          type: object
+          properties:
+            limits:
+              type: array
+              items:
+                type: object
+                properties:
+                  limitType:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Deposit
+                  visible:
+                    type: boolean
+            limitDurations:
+              type: array
+              items:
+                type: object
+                properties:
+                  durationType:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: _24Hours
+    getSelfExclusionPeriodsV2_periodDetailsModel:
+      type: object
+      properties:
+        ID:
+          type: integer
+          description: ID of the duration
+        Days:
+          type: integer
+        Months:
+          type: integer
+    getSelfExclusionPeriodsV2_periodModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the category
+        period:
+          type: array
+          items:
+            $ref: "#/components/schemas/getSelfExclusionPeriodsV2_periodDetailsModel"
+        maxUsageTime:
+          type: integer
+    getSelfExclusionPeriodsV2Payload:
+      type: array
+      items:
+        $ref: "#/components/schemas/getSelfExclusionPeriodsV2_periodModel"
+      example:
+        - id: 1
+          period:
+            id: 2
+            days: 1
+            months: 0
+          maxUsageTime: 1
+        - id: 2
+          period:
+            id: 3
+            days: 7
+            months: 0
+          maxUsageTime: 1
+    getSelfExclusionURLPayload:
+      type: object
+      properties:
+        res:
+          type: string
+          example: http://test1.lotba.com.ar:8080/WsSira_Desa/servlet/wpnactaautoexclusion_online?jJg2bPcUekmpXn-Bq4WQMg==,2AkWVi8txpKaZoL6-8Nw2A==
+    getTimeoutCategoriesPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          periodDurationID:
+            type: number
+          isVisible:
+            type: boolean
+          gracePeriodDurationID:
+            type: number
+          graceEffectiveDurationID:
+            type: number
+          maxUsageTime:
+            type: number
+      example:
+        - id: 1
+          periodDurationID: 2
+          isVisible: true
+          gracePeriodDurationID: 1
+          graceEffectiveDurationID: 1
+          maxUsageTime: 1
+    getTimeoutDurationsPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          days:
+            type: number
+          months:
+            type: number
+      example:
+        - id: 1
+          days: 2
+          months: 1
+    getUserLimitsHistoryV2Payload:
+      type: object
+      properties:
+        res:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 85869
+              limitTypeId:
+                type: integer
+                example: 3
+              durationId:
+                type: integer
+                example: 1
+              userId:
+                type: integer
+                example: 4543010
+              createdDate:
+                type: string
+                example: 2018-09-17T14:07:38.24
+              startDate:
+                type: string
+                example: 2018-09-17T14:07:38.24
+              endDate:
+                type: string
+                nullable: true
+                example: null
+              amount:
+                example: 10
+                nullable: true
+                type: integer
+              amountHr:
+                example: null
+                nullable: true
+                type: integer
+              amountDay:
+                example: null
+                nullable: true
+                type: integer
+    getUserLimitsV2_activeLimitModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 85869
+        limitTypeId:
+          type: integer
+          example: 3
+        durationId:
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 4543010
+        createdDate:
+          type: string
+          example: 2018-09-17T14:07:38.24
+        startDate:
+          type: string
+          example: 2018-09-17T14:07:38.24
+        endDate:
+          type: string
+          nullable: true
+          example: null
+        amount:
+          example: 10
+          nullable: true
+          type: integer
+        amountHr:
+          example: null
+          nullable: true
+          type: integer
+        amountDay:
+          example: null
+          nullable: true
+          type: integer
+        remainingAmount:
+          example: 20
+          nullable: true
+          type: integer
+    futureLimitModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 85869
+    getUserLimitsV2_limitModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 85869
+        limitTypeId:
+          type: integer
+          example: 3
+        durationId:
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 4543010
+        createdDate:
+          type: string
+          example: 2018-09-17T14:07:38.24
+        startDate:
+          type: string
+          example: 2018-09-17T14:07:38.24
+        endDate:
+          type: string
+          nullable: true
+          example: null
+        amount:
+          example: 10
+          nullable: true
+          type: integer
+        amountHr:
+          example: null
+          nullable: true
+          type: integer
+        amountDay:
+          example: null
+          nullable: true
+          type: integer
+    getUserLimitsV2Payload:
+      type: object
+      properties:
+        res:
+          type: object
+          properties:
+            activeLimits:
+              type: array
+              items:
+                $ref: "#/components/schemas/getUserLimitsV2_activeLimitModel"
+            futureLimits:
+              type: array
+              items:
+                $ref: "#/components/schemas/getUserLimitsV2_limitModel"
+    removeLimitPayload:
+      type: object
+      properties:
+        res:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+    setUserLimitsV2_limitModel:
+      type: object
+      required:
+        - userId
+        - type
+        - duration
+        - limitAmount
+      properties:
+        userId:
+          type: integer
+          example: 4548854
+        type:
+          type: integer
+          example: 1
+        duration:
+          type: integer
+          example: 1
+        limitAmount:
+          type: integer
+          example: 100
+        startDate:
+          deprecated: true
+        endDate:
+          deprecated: true
+    setUserLimitsV2Params:
+      type: array
+      items:
+        $ref: "#/components/schemas/setUserLimitsV2_limitModel"
+    setUserLimitsV2Payload:
+      type: object
+      properties:
+        res:
+          type: boolean
+          example: true
+    userPlayStatsAndLimitsParams:
+      type: object
+      required:
+        - months
+      properties:
+        months:
+          type: integer
+          example: 1
+    userPlayStatsAndLimitsPayload:
+      type: object
+      properties:
+        limits:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+                example: 1
+              duration:
+                type: number
+                example: 1
+              limitType:
+                type: number
+                example: 1
+              amount:
+                type: number
+                example: 2.1
+        playStats:
+          type: object
+          properties:
+            netLoss:
+              type: number
+              example: 1.1
+            netGain:
+              type: number
+              example: 2.1
+            totalRealBets:
+              type: number
+              example: 3.1
+            totalRealWins:
+              type: number
+              example: 4.1
+  responses:
+    addPanicSelfExclusionRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/addPanicSelfExclusionPayload"
+    addUserLimitsV2Res:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/addUserLimitsV2Payload"
+    awaitingUserLimitConfirmationRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/awaitingUserLimitConfirmationResPayload"
+    confirmUserLimitsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/confirmUserLimitsPayload"
+    enableSelfExclusionCoolOffRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/enableSelfExclusionCoolOffPayload"
+    enableSelfExclusionV2Res:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/enableSelfExclusionV2Payload"
+    getSelfExclusionPeriodsV2Res:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getSelfExclusionPeriodsV2Payload"
+    getTimeoutCategoriesRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getTimeoutCategoriesPayload"
+    getTimeoutDurationsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getTimeoutDurationsPayload"
+    getUserLimitsHistoryV2Res:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/getUserLimitsHistoryV2Payload"
+    setUserLimitsV2Res:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/setUserLimitsV2Payload"
+    userPlayStatsAndLimitsRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/userPlayStatsAndLimitsPayload"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

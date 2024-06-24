@@ -1,0 +1,235 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  openapi:
+    "0": "3"
+    "1": .
+    "2": "0"
+    "3": .
+    "4": "0"
+  /offers/get:
+    post:
+      tags:
+        - method
+      summary: Get offers
+      description: Get offers
+      requestBody:
+        content:
+          application-json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/get"
+                - $ref: "#/components/schemas/getAll"
+      responses:
+        default:
+          description: Offer response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/getResponse"
+  /offers/optIn:
+    post:
+      tags:
+        - authMethod
+      summary: Opt in to offer
+      description: >
+        Opt in to a specific offer. It is prefered to use the slug instead of
+        the name to get the promotion as the name is not unique.
+
+        The offer must have a CTA of type Optin, and after the player has opted in he will receive the role configured in the CTA. 
+
+
+        \
+
+        This endpoint does NOT call GIG Core API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slug:
+                  type: string
+                  example: offer-1
+                lang:
+                  type: string
+                  example: en
+                userName:
+                  type: string
+                  example: test-user
+                cta:
+                  type: string
+                  example: offer optin cta
+      responses:
+        default:
+          description: Optin result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+components:
+  schemas:
+    get:
+      type: object
+      properties:
+        lang:
+          type: string
+          description: >
+            The language that you want to get offers for, on 2 country letter
+            code.
+
+            This parameter can be sent either by itself, to get all offers for the specified language, or together with `slug` to get only the content for the specified page and language.
+          example: en
+        slug:
+          type: string
+          description: >
+            The slug of the page that you want to get the content for.
+
+            This parameter can be sent together with `lang` to get only the content for the specified page and language.
+          example: offer-slug1
+    getAll:
+      type: object
+      properties:
+        lang:
+          type: string
+          description: >
+            The language that you want to get offers for, on 2 country letter
+            code.
+
+            This parameter can be sent either by itself, to get all offers for the specified language, or together with `slug` to get only the content for the specified page and language.
+          example: en
+    getResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 11f848f0-9787-40ba-aaaa-32bb3d6f23c4
+        slug:
+          type: string
+          example: offer-1
+        btag:
+          description: Offer affiliate ID
+          type: string
+          example: offer-affiliate-id
+        theme:
+          type: string
+          example: mobile
+        image:
+          description: Main image related to the offer, if any
+          type: string
+          example: offer-img.jpg
+        background:
+          description: Offer page background, if any
+          type: string
+          example: background-img.jpg
+        authRequired:
+          description: Whether authentication is required to view this offer
+          type: boolean
+          example: true
+        title:
+          type: string
+        description:
+          type: string
+        content:
+          type: object
+          properties:
+            title:
+              type: string
+            body:
+              type: string
+        cta:
+          type: array
+          items:
+            type: object
+            properties:
+              desktop:
+                type: string
+              mobile:
+                type: string
+              style:
+                type: string
+              target:
+                type: string
+              text:
+                type: string
+              type:
+                type: string
+              position:
+                type: string
+                example: center
+              roles:
+                type: array
+                items:
+                  type: string
+                  example:
+                    - role1
+                    - role2
+          example:
+            - mobile: https://example.com/
+              text: Click here!
+              style: green
+              type: primary
+              desktop: https://example.com/
+              target: _self
+            - mobile: https://example.com/
+              text: Click here too!
+              style: optin
+              type: secondary
+              desktop: https://example.com/
+              target: _parent
+              roles:
+                - testrole
+        tnc:
+          type: object
+          properties:
+            title:
+              type: string
+            body:
+              type: string
+        languages:
+          type: array
+          items:
+            type: string
+            additionalProperties: true
+          example:
+            - en
+            - sv
+            - no
+        lang:
+          type: string
+          example: en
+  responses: {}
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

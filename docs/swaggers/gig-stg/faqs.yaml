@@ -1,0 +1,147 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /faqs/get:
+    post:
+      tags:
+        - method
+      summary: Returns FAQs by language
+      description: |
+        Returns all available FAQ items for a given language
+
+        \
+        This endpoint does NOT call GIG Core API
+      responses:
+        default:
+          $ref: "#/components/responses/GetRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetParams"
+        required: true
+  /faqs/getByCatId:
+    post:
+      tags:
+        - method
+      summary: Returns FAQs by given cat id
+      description: |
+        Returns all available FAQs for given cat id ordered by position
+
+        \
+        This endpoint does NOT call GIG Core API
+      responses:
+        default:
+          $ref: "#/components/responses/GetByCatIdRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetByCatIdParams"
+        required: true
+components:
+  schemas:
+    GetParams:
+      type: object
+      required:
+        - lang
+      properties:
+        lang:
+          type: string
+          example: en
+    GetResPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            example: GUID
+          position:
+            type: integer
+            example: 1
+          catId:
+            type: string
+            example: GUID
+          question:
+            type: string
+            example: Example question
+          answer:
+            type: string
+            example: Example answer
+    GetByCatIdParams:
+      type: object
+      required:
+        - catId
+      properties:
+        catId:
+          type: string
+          example: 97217ebb-761d-4caf-823b-da445b5021f5
+    GetByCatIdResPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            example: GUID
+          position:
+            type: integer
+            example: 1
+          catId:
+            type: string
+            example: GUID
+          question:
+            type: object
+            additionalProperties:
+              type: string
+            example:
+              en: example question
+          answer:
+            type: object
+            additionalProperties:
+              type: string
+            example:
+              en: example answer
+  responses:
+    GetRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetResPayload"
+    GetByCatIdRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetByCatIdResPayload"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

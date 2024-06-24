@@ -1,0 +1,329 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /geoComply/authorize:
+    post:
+      tags:
+        - authMethod
+      summary: Authorize with a geocomply response
+      description: Authorizes with a geocomply response and returns the deadline time
+        to call the endpoint again with a new valid response .
+      responses:
+        default:
+          $ref: "#/components/responses/AuthorizeRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthorizeReq"
+        required: true
+  openapi:
+    "0": "3"
+    "1": .
+    "2": "0"
+    "3": .
+    "4": "0"
+  info:
+    title: /geoComply/authorizeV2
+    version: "1"
+    description: Renew the GeoPackage of the User
+  /geoComply/authorizeV2:
+    post:
+      tags:
+        - authMethod
+      summary: Renew the GeoPackage of the User
+      description: >
+        This endpoint will be used to renew the GeoPackage of the User. This
+        should be called by FE after the TTL (seconds) of the last package
+        assigned to the respective User.'
+
+
+        \
+
+        This endpoint does the following GIG Core calls:
+
+        ```
+
+        - /geoComply/authorize
+
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                geoPackage:
+                  type: string
+                  example: 0L+vFKKm74Dsz/...cw+OSYM7g==
+                  description: Encoded response from GeoComply
+        required: true
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  geoPackageTTL:
+                    type: integer
+                    example: 120
+                    description: TTL (seconds) of the last package assigned to the respective User.
+        "500":
+          description: error during authorization of the GeoPackage
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    example: GEO_LOCATION_AUTHORIZATION_FAILED
+                    description: authorization failed error code
+  /geoComply/decodeResponse:
+    post:
+      tags:
+        - method
+        - authMethod
+      summary: Validate a geocomply response
+      description: Validates a geocomply response and returns a token for later usage.
+      responses:
+        default:
+          $ref: "#/components/responses/DecodeResponseRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DecodeResponseReq"
+        required: true
+  /geoComply/getLicense:
+    post:
+      tags:
+        - method
+        - authMethod
+      summary: Get geocomply license.
+      description: Gets the license of geocomply required to make calls from frontend.
+      responses:
+        default:
+          $ref: "#/components/responses/GetLicenseRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetLicenseReq"
+        required: true
+  /geoComply/getLicenseV2:
+    post:
+      tags:
+        - method
+        - authMethod
+      summary: Get geocomply license from Core.
+      description: Gets the license of geocomply required to make calls from frontend.
+      responses:
+        default:
+          $ref: "#/components/schemas/GetLicenseV2Res"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetLicenseV2Req"
+        required: true
+  /geoComply/verifyToken:
+    post:
+      tags:
+        - method
+        - authMethod
+      summary: Verify a token
+      description: Returns true if a GeoComply Token is still valid for a user. The
+        GeoToken is obtained from the `/geoComply/decodeResponse` endpoint.
+      responses:
+        default:
+          $ref: "#/components/responses/VerifyTokenRes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyTokenReq"
+        required: true
+components:
+  schemas:
+    AuthorizeReq:
+      type: object
+      required:
+        - response
+      properties:
+        response:
+          type: string
+          example: 0L+vFKKm74Dsz/...cw+OSYM7g==
+          description: Encoded response from geocomply
+    AuthorizeRes:
+      type: object
+      properties:
+        geoAuthExpireIn:
+          type: number
+          example: 120
+          description: Seconds until the user session is expired if no more calls are made
+            to this endpoint
+    DecodeResponseReq:
+      type: object
+      required:
+        - response
+      properties:
+        response:
+          type: string
+          example: 0L+vFKKm74Dsz/...cw+OSYM7g==
+          description: Encoded response from geocomply for a frontend call
+    DecodeResponseRes:
+      type: object
+      properties:
+        geoToken:
+          type: string
+          format: uuid
+          example: 6d142bd4-9c5e-4e57-9209-2ad2455c45da
+          description: Token we generate uniquely per user to ensure this reponse is used
+            properly
+        passed:
+          type: boolean
+          example: "true"
+          description: if the response is valid
+        errors:
+          type: array
+          items:
+            type: string
+            example: RESPONSE_ALREADY_USED
+          description: Errors in the response if any
+        errorsDetails:
+          type: array
+          items:
+            type: string
+            example: out_of_boundary
+          description: Errors details from geocomply
+        errorMessages:
+          type: string
+          example: device,ip_filter,boundary
+          description: Error message from geocomply
+        recheckIn:
+          type: number
+          example: 120
+          description: Seconds to wait until the next check in geocomply
+    GetLicenseReq:
+      type: object
+      properties:
+        refresh:
+          type: boolean
+          example: "true"
+          description: Force to refresh the license
+    GetLicenseRes:
+      type: string
+      example: 5d81fe6500...c9e905ef9
+      description: License required to call geo comply
+    GetLicenseV2Req:
+      type: object
+      properties:
+        forceRefresh:
+          type: boolean
+          example: "true"
+          description: Force to refresh the license
+        productType:
+          type: string
+          example: Type
+          description: Possible values are `Solus`or `WebApp`, front end clients should
+            use `Solus`
+    GetLicenseV2Res:
+      type: object
+      properties:
+        licenseString:
+          type: string
+          example: 5d81fe6500...c9e905ef9
+      description: License required to call geo comply
+    VerifyTokenReq:
+      type: object
+      required:
+        - token
+        - tokenIGC
+      properties:
+        token:
+          type: string
+          format: uuid
+          example: 6d142bd4-9c5e-4e57-9209-2ad2455c45da
+          description: Unique token per geocomply response per user
+        tokenIGC:
+          type: string
+          format: uuid
+          example: 9ba2d69f-2af3-499f-8454-2f9ea38a16f2
+          description: IGC token for a user
+    VerifyTokenRes:
+      type: boolean
+      example: "true"
+      description: Returns if a token is still valid
+  responses:
+    "200":
+      description: Geo Comply License obtained
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetLicenseV2Res"
+    "500":
+      description: GEOCOMPLY_INVALID_KEYS
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              err:
+                type: string
+                example: 55b24e5a699bb5e0f9247932
+    AuthorizeRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AuthorizeRes"
+    DecodeResponseRes:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/DecodeResponseRes"
+    GetLicenseRes:
+      description: License required to call geo comply
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetLicenseRes"
+    VerifyTokenRes:
+      description: Returns if a token is still valid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/VerifyTokenRes"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

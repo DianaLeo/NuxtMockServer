@@ -1,0 +1,93 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  /configs/navigation:
+    post:
+      tags:
+        - method
+      summary: Navigation configuration
+      description: |
+        Returns the configuration for the navigation
+
+        \
+        This endpoint does NOT call GIG Core API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/navigationParams"
+        required: true
+      responses:
+        default:
+          $ref: "#/components/responses/navigationRes"
+components:
+  schemas:
+    navigationParams:
+      type: object
+      properties:
+        lang:
+          type: string
+          example: en
+        type:
+          type: string
+          example: mobile
+    navigationPayload:
+      type: array
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+            example: Live Casino
+          link:
+            type: string
+            example: /live-casino
+          target:
+            type: string
+            example: _blank
+          css:
+            type: string
+            example: live-casino
+          key:
+            type: string
+            description: Key shortcut to use
+            example: A
+          authenticated:
+            type: boolean
+            example: true
+  responses:
+    navigationRes:
+      description: Object containing optional Game ID property and additional filters
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/navigationPayload"
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}

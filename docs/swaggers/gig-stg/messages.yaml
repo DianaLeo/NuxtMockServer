@@ -1,0 +1,703 @@
+openapi: 3.0.1
+info:
+  title: GIG Magic API
+  version: "1"
+  description: GIG Magic API description
+servers:
+  - url: https://stg-api-b.gigmagic.io/igc/luckiest/
+    description: ""
+    variables: {}
+paths:
+  openapi:
+    "0": "3"
+    "1": .
+    "2": "0"
+    "3": .
+    "4": "0"
+  /messages/archive:
+    post:
+      tags:
+        - authMethod
+      summary: Mark message as archived
+      description: |
+        Mark message as archived
+
+        \
+        This endpoint does NOT call GIG Core API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                messageId:
+                  type: string
+                  example: b30c1428-dfda-4774-be73-27c6d5144fd1
+      responses:
+        default:
+          description: Mark as archived result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 200
+                  statusText:
+                    type: string
+                    example: OK
+  info:
+    title: Remove Template Message API
+    description: Filter messages
+    version: "1.0"
+  /messages/bulkremove:
+    post:
+      tags:
+        - private
+      summary: Bulk Remove Messages
+      description: Bulk remove messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: All messages from request payload have been removed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: object
+                    properties:
+                      success:
+                        type: boolean
+                        example: true
+        "500":
+          description: In the case that not all messages have been removed, it will be
+            returned a list of all failed ones along with why they were not
+            removed. The messages that does not appear in this list, have been
+            removed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                    example: '[\"62e888cb-43ea-4361-adcf-0242fd0d5575: reason
+                      1\",\"484fd5c1-bfea-49ff-8ea4-3f196cf0a730: reason 2"]'
+      security:
+        - x-api-key: []
+        - x-api-sid: []
+  servers:
+    "0":
+      url: https
+  /message/fetch:
+    post:
+      tags:
+        - private
+      summary: Fetch messages using filters or fetch a single message by id.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skip:
+                  type: integer
+                  required: false
+                  description: Number of messages to skip
+                  example: 0
+                limit:
+                  type: integer
+                  required: false
+                  description: Number of messages to fetch
+                  example: 10
+                  default: 30
+                order:
+                  type: string
+                  required: false
+                  description: Order messages by field
+                  example: title
+                  default: created_at
+                order_direction:
+                  type: string
+                  required: false
+                  description: Order messages by direction
+                  example: asc
+                  default: desc
+                include:
+                  type: string
+                  required: false
+                  description: Address tags defined for this messages
+                  example: lang:en,segment:9
+                exclude:
+                  type: string
+                  required: false
+                  description: Exclusion tags defined for this messages
+                  example: lang:it,segment:3
+                sender:
+                  type: string
+                  required: false
+                  description: Filter messages by sender
+                  example: super-user
+                title:
+                  type: string
+                  required: false
+                  description: Filter messages by title
+                  example: christmas campaign
+                id:
+                  type: string
+                  required: false
+                  description: Fetch a single message by id. When this parameter is present, all
+                    other parameters are ignored.
+                  example: e2df7b55-3e7a-4625-8b65-6ba1e6468719
+                count:
+                  type: boolean
+                  required: false
+                  description: Return the number of messages that match the filters
+                  example: true
+                  default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  res:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        active:
+                          type: boolean
+                          description: Message is active
+                          example: true
+                        address:
+                          type: array
+                          description: Message address
+                          example:
+                            - user:AugustaNiccoli6139
+                            - lang:es
+                            - platform:ipad
+                        created:
+                          type: string
+                          description: Message creation date
+                          example: 2020-12-15T16:00:00.000Z
+                        createdBy:
+                          type: string
+                          description: Message creator
+                          example: super-user
+                        excludes:
+                          type: array
+                          description: Message excluded filters
+                          example:
+                            - lang:it
+                            - segment:3
+                        expiry:
+                          type: string
+                          description: Message expires date
+                          example: 2020-12-15T16:00:00.000Z
+                        id:
+                          type: string
+                          description: Message id
+                          example: e2df7b55-3e7a-4625-8b65-6ba1e6468719
+                        name:
+                          type: string
+                          description: Message name
+                          example: christmas campaign
+                        once:
+                          type: boolean
+                          description: Message is sent only once
+                          example: true
+                        sentAt:
+                          type: string
+                          description: Message sent date
+                          example: 2020-12-15T16:00:00.000Z
+                        tags:
+                          type: array
+                          description: Message tags
+                          example:
+                            - lang:en
+                            - segment:0||1||2||3||6||4||7||8||9
+                        templateId:
+                          type: string
+                          description: ID of Message template used in this message
+                          example: e2df7b55-3e7a-4625-8b65-6ba1e6468719
+                        title:
+                          type: string
+                          description: Message title
+                          example: christmas campaign
+                        start:
+                          type: string
+                          description: Message start date
+                          example: 2020-12-15T16:00:00.000Z
+        "500":
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+  /messages/filter:
+    post:
+      tags:
+        - authMethod
+        - private
+      summary: Filter user messages
+      description: |
+        Fetch user messages
+
+        \
+        This endpoint does NOT call GIG Core API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lang:
+                  type: string
+                  example: en
+      responses:
+        default:
+          description: Messages
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/messageResponse"
+  /messages/read:
+    post:
+      tags:
+        - authMethod
+      summary: Mark message as read
+      description: |
+        Mark message as read
+
+        \
+        This endpoint does NOT call GIG Core API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                messageId:
+                  type: string
+                  example: b30c1428-dfda-4774-be73-27c6d5144fd1
+      responses:
+        default:
+          description: Mark as read result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 200
+                  statusText:
+                    type: string
+                    example: OK
+  /messages/receive:
+    post:
+      tags:
+        - authMethod
+      summary: Mark message as received
+      description: |
+        Mark message as received
+
+        \
+        This endpoint does NOT call GIG Core API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                messageId:
+                  type: string
+                  example: b30c1428-dfda-4774-be73-27c6d5144fd1
+      responses:
+        default:
+          description: Mark as received result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 200
+                  statusText:
+                    type: string
+                    example: OK
+  "/messageTemplates/remove/{templateId}":
+    post:
+      tags:
+        - private
+      summary: Remove a template message
+      parameters:
+        - name: templateId
+          in: path
+          description: ID of the template to be removed
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json: {}
+      responses:
+        "200":
+          description: Template successfully removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        "500":
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: error message
+      security:
+        - x-api-key: []
+        - x-api-sid: []
+components:
+  schemas:
+    messageResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        design:
+          type: number
+          enum:
+            - "0": GENERAL_NOTIFICATION
+            - "1": FREE_SPINS
+            - "2": RELOAD_BONUS
+            - "3": FREE_MONEY_BONUS
+            - "4": HAPPY_HOURS
+            - "5": DOUBLE_RELOAD
+            - "6": FIXED_RELOAD
+            - "7": FESTIVAL
+            - "8": FREE_FALL_CHALLENGE
+            - "9": DEPOSIT_AND_FREE_SPINS
+            - "10": NEW_GAME
+            - "11": SURPRISE_BUNNY
+            - "12": EASTER_EGG
+            - "13": SUMMER
+            - "14": BONUS_METRE
+            - "15": REGISTRATION
+            - "16": HALLOWEEN
+            - "17": CHRISTMAS
+            - "18": REWARD
+            - "19": PERSONAL_NOTE
+            - "20": CASINO
+            - "21": SPORTSBOOK
+            - "22": DEPOSIT
+            - "23": PLAY
+            - "24": SUCCESS
+            - "25": GENERIC
+        subject:
+          type: object
+          additionalProperties: true
+          example:
+            - en: sample text
+        body:
+          type: object
+          additionalProperties: true
+          example:
+            - en: sample text
+        body2:
+          type: object
+          additionalProperties: true
+          example:
+            - en: sample text
+        image:
+          type: string
+        link:
+          type: string
+        link2:
+          type: string
+        tnc:
+          type: object
+          additionalProperties: true
+          example:
+            - en: sample text
+        url:
+          type: string
+        url2:
+          type: string
+        name:
+          type: string
+        once:
+          type: boolean
+        priority:
+          type: number
+          enum:
+            - "0": PROMOTION
+            - "1": POP_OPEN
+            - "2": IMPORTANT
+            - "3": BIG_PROMOTION
+            - "4": LOW_PRIORITY
+        type:
+          type: number
+          enum:
+            - "0": CAMPAIGN
+            - "1": AD_HOC
+            - "2": ALERTS
+            - "3": AFFILIATE
+            - "4": BONUS
+            - "5": VIP
+            - "6": NOTIFICATION
+            - "7": PLAY_SAFE
+        status:
+          type: string
+          enum:
+            - R: READ
+            - D: DELETED
+            - C: CANCELLED
+            - N: NEW
+        created:
+          type: string
+          format: date-time
+        sentAt:
+          type: string
+          format: date-time
+          description: Date that the direct/scheduled message was sent
+        bonusAmounts:
+          type: object
+          properties:
+            AUD:
+              type: number
+              example: 12
+            CAD:
+              type: number
+              example: 12
+            EUR:
+              type: number
+              example: 12
+            GBP:
+              type: number
+              example: 12
+            JPY:
+              type: number
+              example: 12
+            NOK:
+              type: number
+              example: 120
+            NZD:
+              type: number
+              example: 12
+            SEK:
+              type: number
+              example: 120
+            USD:
+              type: number
+              example: 12
+            INR:
+              type: number
+              example: 12
+            MXN:
+              type: number
+              example: 12
+            MKD:
+              type: number
+              example: 12
+            HUF:
+              type: number
+              example: 12
+            THB:
+              type: number
+              example: 12
+            KRW:
+              type: number
+              example: 12
+            ZAR:
+              type: number
+              example: 12
+            CLP:
+              type: number
+              example: 12
+            ARS:
+              type: number
+              example: 12
+            RON:
+              type: number
+              example: 12
+            PEN:
+              type: number
+              example: 12
+            ZMW:
+              type: number
+              example: 12
+            LKR:
+              type: number
+              example: 12
+            BRL:
+              type: number
+              example: 12
+            VND:
+              type: number
+              example: 12
+        bonusCodes:
+          type: object
+          properties:
+            AUD:
+              type: number
+              example: 12
+            CAD:
+              type: number
+              example: 12
+            EUR:
+              type: number
+              example: 12
+            GBP:
+              type: number
+              example: 12
+            JPY:
+              type: number
+              example: 12
+            NOK:
+              type: number
+              example: 12
+            NZD:
+              type: number
+              example: 12
+            SEK:
+              type: number
+              example: 12
+            USD:
+              type: number
+              example: 12
+            INR:
+              type: number
+              example: 12
+            MXN:
+              type: number
+              example: 12
+            MKD:
+              type: number
+              example: 12
+            HUF:
+              type: number
+              example: 12
+            THB:
+              type: number
+              example: 12
+            KRW:
+              type: number
+              example: 12
+            ZAR:
+              type: number
+              example: 12
+            CLP:
+              type: number
+              example: 12
+            ARS:
+              type: number
+              example: 12
+            RON:
+              type: number
+              example: 12
+            PEN:
+              type: number
+              example: 12
+            ZMW:
+              type: number
+              example: 12
+            LKR:
+              type: number
+              example: 12
+            BRL:
+              type: number
+              example: 12
+            VND:
+              type: number
+              example: 12
+        error:
+          type: object
+          properties:
+            body:
+              type: object
+              additionalProperties: true
+              example:
+                - en: sample text
+            title:
+              type: object
+              additionalProperties: true
+              example:
+                - en: sample text
+        success:
+          type: object
+          properties:
+            body:
+              type: object
+              additionalProperties: true
+              example:
+                - en: sample text
+            title:
+              type: object
+              additionalProperties: true
+              example:
+                - en: sample text
+  responses: {}
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    sessionId:
+      type: apiKey
+      description: sessionId (sid) of a logged in user
+      name: x-api-sid
+      in: header
+    x-api-key:
+      type: apiKey
+      in: header
+      name: x-api-key
+    x-api-sid:
+      type: apiKey
+      in: header
+      name: x-api-sid
+  links: {}
+  callbacks: {}
+security:
+  - sessionId: []
+tags:
+  - name: authMethod
+    description: Methods which require login
+  - name: method
+    description: Methods which do NOT require login
+  - name: private
+    description: Internal endpoints, not available publicly
+channels: {}
