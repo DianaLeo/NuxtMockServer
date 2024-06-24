@@ -8,10 +8,11 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "mock": "json-server --watch server/mock/db.json --port 8080"
+    "mock": "json-server server/mock/db.json --port 8080"
   },
   "dependencies": {
     "json-server": "^1.0.0-beta.1",
+    "json-server-auth": "^2.1.0",
     "nuxt": "^3.12.2",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"

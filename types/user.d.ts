@@ -33,6 +33,7 @@ export type User = {
     firstName: string
     lastName: string
     email: string
+    password: string
     dateOfBirth: string
     accountPreferences: AccountPreferences
     communicationsVerified: boolean

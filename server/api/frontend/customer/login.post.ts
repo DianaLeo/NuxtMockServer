@@ -1,10 +1,20 @@
 import { useUsers } from "~/server/composables/useUsers"
-import type {Login} from "~/types"
+import type {User,Login} from "~/types"
 
 export default defineEventHandler(async (event) => {
-    let user = {}
     const body:Login = await readBody(event)
+
     const {login} = useUsers()
-    user = await login(body)
-    return {body}
+    const {user, signedSession} = await login(body)
+    
+    const config = useRuntimeConfig()
+    setCookie(event, config.cookieName, signedSession, {
+        httpOnly: true,
+        path: "/",
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+        expires: new Date(Date.now() + parseInt(config.cookieExpires)),
+      })
+
+    return {user}
 })

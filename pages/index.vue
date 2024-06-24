@@ -15,7 +15,7 @@ async function handleClick() {
   <div>
     <h1>Users</h1>
     <button @click="handleClick">Add User</button>
-    <p>{{data?.body}}</p>
+    <p>{{data?.user}}</p>
   </div>
 </template>
 
