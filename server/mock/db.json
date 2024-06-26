@@ -38,8 +38,8 @@
       "customerId": "string",
       "firstName": "string",
       "lastName": "string",
-      "email": "email",
-      "password":"password",
+      "email": "email1",
+      "password":"password1",
       "dateOfBirth": "2024-06-24T04:58:01.623Z",
       "accountPreferences": {
         "zoneId": "Pacific/Midway",
