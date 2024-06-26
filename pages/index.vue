@@ -54,7 +54,11 @@ async function handleLogin() {
 
 async function handlePosts(){
   try {
-    posts.value = await $fetch('/api/frontend/posts')
+    posts.value = await $fetch('/api/frontend/posts',{
+      headers: {
+        'Authentication-Token': loginResponse.value?.tokenRenewUrl || ""
+      }
+    })
   } catch (error) {
     const e = error as NuxtError
     throw createError({ statusCode: e.statusCode, statusMessage: e.message,fatal:true })
