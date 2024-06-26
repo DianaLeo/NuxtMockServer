@@ -1,14 +1,15 @@
 import { useUsers } from "~/server/composables/useUsers"
-import type {User,Login} from "~/types"
+import type {CustomerData,FrontendLogin} from "~/types"
 
 export default defineEventHandler(async (event) => {
-    const body:Login = await readBody(event)
+    const body:FrontendLogin = await readBody(event)
 
     const {login} = useUsers()
-    const {user, signedSession} = await login(body)
-    
+    const user:Partial<CustomerData> = await login(body)
+
     const config = useRuntimeConfig()
-    setCookie(event, config.cookieName, signedSession, {
+
+    user.tokenRenewUrl && setCookie(event, config.cookieName, user.tokenRenewUrl, {
         httpOnly: true,
         path: "/",
         sameSite: "strict",

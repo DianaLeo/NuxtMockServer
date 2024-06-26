@@ -27,48 +27,96 @@
   ],
   "users": [
     {
-      "freeBets": ["string"],
-      "address": "string",
-      "phoneNumber": "string",
-      "city": "string",
-      "country": "string",
-      "countryISO3": "string",
-      "postalCode": "string",
-      "phoneCode": "string",
-      "customerId": "string",
-      "firstName": "string",
-      "lastName": "string",
+      "id": "0eb7",
+      "freeBets": [],
+      "address": "dafs",
+      "phoneNumber": "daf",
+      "city": "dafd",
+      "country": "Placeholder",
+      "countryISO3": "sfdaftring",
+      "postalCode": "daf",
+      "phoneCode": "dafd",
+      "customerId": "placeholder",
+      "firstName": "dfd",
+      "lastName": "strfdafing",
       "email": "email1",
-      "password":"password1",
-      "dateOfBirth": "2024-06-24T04:58:01.623Z",
+      "password": "$2b$10$p.fVytKV0DT94jbOBMxnj.iHbgZM7MCGrqjTO/tnAJnkLcuEPc03O",
+      "dateOfBirth": "2024-06-26T01:55:07.535Z",
       "accountPreferences": {
-        "zoneId": "Pacific/Midway",
-        "languageCode": "en",
-        "preferredFiatCurrency": "USD",
-        "preferredGameLaunchCurrency": "USD",
+        "zoneId": "placeholder",
+        "languageCode": "daf",
+        "preferredFiatCurrency": "dasf",
+        "preferredGameLaunchCurrency": "dasf",
         "hidden": true
       },
-      "communicationsVerified": true,
+      "communicationsVerified": false,
       "balances": [
         {
-          "currency": "string",
+          "currency": "placeholder",
           "currencyPrecision": 0,
           "balance": 0,
           "bonusBalance": 0,
           "vaultBalance": 0
         }
       ],
-      "tokenRenewUrl": "string",
-      "currency": "string",
-      "mfaLogin": true,
-      "mfaWithdrawal": true,
+      "tokenRenewUrl": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVtYWlsMSIsImlhdCI6MTcxOTM3ODQ3NSwiZXhwIjoxNzE5NDY0ODc1fQ.t6OTkhpXpgXxvq295UJzJzZPkpk5-wpy0HLFkwUpGIc",
+      "currency": "dasf",
+      "mfaLogin": false,
+      "mfaWithdrawal": null,
       "mfaStatus": "NOT_SET",
-      "mfaReferenceId": "string",
-      "remind2FA": true,
+      "mfaReferenceId": null,
+      "remind2FA": null,
       "kycData": {
         "idvStatus": "NOT_VERIFIED",
         "poaStatus": "NOT_VERIFIED",
-        "displayType": "IDV_EXPIRATION_REMINDER"
+        "displayType": null
+      },
+      "loginType": "PASSWORD"
+    },
+    {
+      "id": "542e",
+      "freeBets": [],
+      "address": "dafs",
+      "phoneNumber": "daf",
+      "city": "dafd",
+      "country": "Placeholder",
+      "countryISO3": "sfdaftring",
+      "postalCode": "daf",
+      "phoneCode": "dafd",
+      "customerId": "placeholder",
+      "firstName": "dfd",
+      "lastName": "strfdafing",
+      "email": "email2",
+      "password": "$2b$10$b6JPC1uQ4aBzR5C6Zb1/7e8V0.OdJHjPe5wzPi4DSKWmd6SNSVHKS",
+      "dateOfBirth": "2024-06-26T01:55:07.535Z",
+      "accountPreferences": {
+        "zoneId": "placeholder",
+        "languageCode": "daf",
+        "preferredFiatCurrency": "dasf",
+        "preferredGameLaunchCurrency": "dasf",
+        "hidden": true
+      },
+      "communicationsVerified": false,
+      "balances": [
+        {
+          "currency": "placeholder",
+          "currencyPrecision": 0,
+          "balance": 0,
+          "bonusBalance": 0,
+          "vaultBalance": 0
+        }
+      ],
+      "tokenRenewUrl": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVtYWlsMiIsImlhdCI6MTcxOTM4MDkxNywiZXhwIjoxNzE5NDY3MzE3fQ.aydw2XtHLUsJL1gDmUPPGPPegtcOhideLC-C1fWugeU",
+      "currency": "dasf",
+      "mfaLogin": false,
+      "mfaWithdrawal": null,
+      "mfaStatus": "NOT_SET",
+      "mfaReferenceId": null,
+      "remind2FA": null,
+      "kycData": {
+        "idvStatus": "NOT_VERIFIED",
+        "poaStatus": "NOT_VERIFIED",
+        "displayType": null
       },
       "loginType": "PASSWORD"
     }

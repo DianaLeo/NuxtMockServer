@@ -14,6 +14,13 @@ export function UnauthorizedError (statusText: string): H3Error {
     })
 }
 
+export function ConflictError (statusText: string): H3Error {
+    return createError({
+        statusCode: 409,
+        statusText,
+    })
+}
+
 export function InternalError (statusText: string): H3Error {
     return createError({
         statusCode: 500,
