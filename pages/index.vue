@@ -5,6 +5,7 @@ import type {NuxtError} from "#app"
 const loginResponse = ref<CustomerData>()
 const registerResponse = ref<CustomerAccountResponse>()
 const posts = ref()
+const comments = ref()
 
 async function handleRegister(){
   try {
@@ -28,7 +29,7 @@ async function handleRegister(){
           state: "daf",
           addressLine1: "fdafda",
           address: "dafs",
-          email: "email2",
+          email: "email1",
           password: "password1"
         },
         termsAndConditionsAccepted: true,
@@ -64,6 +65,19 @@ async function handlePosts(){
     throw createError({ statusCode: e.statusCode, statusMessage: e.message,fatal:true })
   }
 }
+
+async function handleComments(){
+  try {
+    comments.value = await $fetch('/api/frontend/comments',{
+      headers: {
+        'Authentication-Token': loginResponse.value?.tokenRenewUrl || ""
+      }
+    })
+  } catch (error) {
+    const e = error as NuxtError
+    throw createError({ statusCode: e.statusCode, statusMessage: e.message,fatal:true })
+  }
+}
 </script>
 
 <template>
@@ -73,8 +87,11 @@ async function handlePosts(){
     <p>{{registerResponse}}</p>
     <button @click="handleLogin">Login</button>
     <p>{{loginResponse}}</p>
+    <p>token = {{loginResponse?.tokenRenewUrl}}</p>
     <button @click="handlePosts">Posts</button>
     <p>{{posts}}</p>
+    <button @click="handleComments">Comments</button>
+    <p>{{comments}}</p>
   </div>
 </template>
 

@@ -27,7 +27,7 @@
   ],
   "users": [
     {
-      "id": "0eb7",
+      "id": "d565",
       "freeBets": [],
       "address": "dafs",
       "phoneNumber": "daf",
@@ -40,7 +40,7 @@
       "firstName": "dfd",
       "lastName": "strfdafing",
       "email": "email1",
-      "password": "$2b$10$p.fVytKV0DT94jbOBMxnj.iHbgZM7MCGrqjTO/tnAJnkLcuEPc03O",
+      "password": "$2b$10$xlA6vDTCtf7bhZk/ZQmqr.HP7xn/5/v6wIUPGOoFi98dG9ZF7CXTK",
       "dateOfBirth": "2024-06-26T01:55:07.535Z",
       "accountPreferences": {
         "zoneId": "placeholder",
@@ -59,54 +59,7 @@
           "vaultBalance": 0
         }
       ],
-      "tokenRenewUrl": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVtYWlsMSIsImlhdCI6MTcxOTM3ODQ3NSwiZXhwIjoxNzE5NDY0ODc1fQ.t6OTkhpXpgXxvq295UJzJzZPkpk5-wpy0HLFkwUpGIc",
-      "currency": "dasf",
-      "mfaLogin": false,
-      "mfaWithdrawal": null,
-      "mfaStatus": "NOT_SET",
-      "mfaReferenceId": null,
-      "remind2FA": null,
-      "kycData": {
-        "idvStatus": "NOT_VERIFIED",
-        "poaStatus": "NOT_VERIFIED",
-        "displayType": null
-      },
-      "loginType": "PASSWORD"
-    },
-    {
-      "id": "542e",
-      "freeBets": [],
-      "address": "dafs",
-      "phoneNumber": "daf",
-      "city": "dafd",
-      "country": "Placeholder",
-      "countryISO3": "sfdaftring",
-      "postalCode": "daf",
-      "phoneCode": "dafd",
-      "customerId": "placeholder",
-      "firstName": "dfd",
-      "lastName": "strfdafing",
-      "email": "email2",
-      "password": "$2b$10$b6JPC1uQ4aBzR5C6Zb1/7e8V0.OdJHjPe5wzPi4DSKWmd6SNSVHKS",
-      "dateOfBirth": "2024-06-26T01:55:07.535Z",
-      "accountPreferences": {
-        "zoneId": "placeholder",
-        "languageCode": "daf",
-        "preferredFiatCurrency": "dasf",
-        "preferredGameLaunchCurrency": "dasf",
-        "hidden": true
-      },
-      "communicationsVerified": false,
-      "balances": [
-        {
-          "currency": "placeholder",
-          "currencyPrecision": 0,
-          "balance": 0,
-          "bonusBalance": 0,
-          "vaultBalance": 0
-        }
-      ],
-      "tokenRenewUrl": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVtYWlsMiIsImlhdCI6MTcxOTM4MDkxNywiZXhwIjoxNzE5NDY3MzE3fQ.aydw2XtHLUsJL1gDmUPPGPPegtcOhideLC-C1fWugeU",
+      "tokenRenewUrl": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVtYWlsMSIsImlhdCI6MTcxOTQ0NDcwMSwiZXhwIjoxNzE5NTMxMTAxfQ.pDlJjZru051Ie3W_PF6P5xJsOooQjeXQAKTA_gI-EQA",
       "currency": "dasf",
       "mfaLogin": false,
       "mfaWithdrawal": null,

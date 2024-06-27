@@ -1,25 +1,24 @@
 import type {
-    AccountPreferences,
     CustomerAccountResponse,
-    CustomerData, CustomerDataBalance, CustomerDataKyc,
+    CustomerData,
     FrontendLogin,
     FrontendRegistration,
 } from "~/types"
-import {hashPassword, verifyPassword} from "~/server/utils/password";
-import {generateToken} from "~/server/utils/jwt";
+import {hashPassword, verifyPassword} from "~/server/utils/password"
+import {generateToken} from "~/server/utils/jwt"
 
-export const useUsers = () => {
-    const findUserByEmail = async (email:string):Promise<CustomerData | undefined> => {
-        let users:CustomerData[]
+export const useAuthentication = () => {
+    const findUserByEmail = async (email:string):Promise<CustomerData& {id:string} | undefined> => {
+        let users:(CustomerData & {id:string})[]
         try{
             users = await $fetch('http://localhost:8080/users')
         }catch (e){
             throw InternalError("Internal error fetching users")
         }
-        return users.find((user:CustomerData)=>user.email===email)
+        return users.find((user:CustomerData & {id:string})=>user.email===email)
     }
 
-    const login = async ({email, password}:FrontendLogin):Promise<Partial<CustomerData>> => {
+    const login = async ({email, password}:FrontendLogin):Promise<Omit<CustomerData, "password"> & {id:string}> => {
         if (!email || !password) {
             throw BadRequestError("Email address and password are required")
         }
@@ -143,7 +142,6 @@ export const useUsers = () => {
                 },
                 body: transformedBody
             })
-            console.log("newUser posted", newUser)
         } catch (e) {
             throw InternalError("Internal error fetching users")
         }

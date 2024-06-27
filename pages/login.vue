@@ -2,7 +2,7 @@
 import type {User} from "~/types"
 
 // const { posts, fetchPosts } = usePosts()
-// const { users, fetchUsers,postUser } = useUsers()
+// const { users, fetchUsers,postUser } = useAuthentication()
 //
 // onMounted(() => {
 //   fetchPosts()
