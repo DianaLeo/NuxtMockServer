@@ -27,7 +27,7 @@
   ],
   "users": [
     {
-      "id": "d565",
+      "id": "9769",
       "freeBets": [],
       "address": "dafs",
       "phoneNumber": "daf",
@@ -40,7 +40,7 @@
       "firstName": "dfd",
       "lastName": "strfdafing",
       "email": "email1",
-      "password": "$2b$10$xlA6vDTCtf7bhZk/ZQmqr.HP7xn/5/v6wIUPGOoFi98dG9ZF7CXTK",
+      "password": "$2b$10$nC5Jr3yfIpT2oSg1rEIpoO.FnbQtd1gH9/TMpeCl0JUiy8YJa9Xg.",
       "dateOfBirth": "2024-06-26T01:55:07.535Z",
       "accountPreferences": {
         "zoneId": "placeholder",
@@ -59,7 +59,7 @@
           "vaultBalance": 0
         }
       ],
-      "tokenRenewUrl": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImVtYWlsMSIsImlhdCI6MTcxOTQ0NDcwMSwiZXhwIjoxNzE5NTMxMTAxfQ.pDlJjZru051Ie3W_PF6P5xJsOooQjeXQAKTA_gI-EQA",
+      "tokenRenewUrl": "",
       "currency": "dasf",
       "mfaLogin": false,
       "mfaWithdrawal": null,

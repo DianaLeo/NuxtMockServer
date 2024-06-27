@@ -3,6 +3,7 @@ import type {CustomerAccountResponse, CustomerData} from "~/types"
 import type {NuxtError} from "#app"
 
 const loginResponse = ref<CustomerData>()
+const logoutResponse = ref()
 const registerResponse = ref<CustomerAccountResponse>()
 const posts = ref()
 const comments = ref()
@@ -53,13 +54,20 @@ async function handleLogin() {
   }
 }
 
+async function handleLogout() {
+  try {
+    logoutResponse.value = await $fetch('/api/frontend/customer/logout', {
+      method: 'post',
+    })
+  } catch (error) {
+    const e = error as NuxtError
+    throw createError({ statusCode: e.statusCode, statusMessage: e.message,fatal:true })
+  }
+}
+
 async function handlePosts(){
   try {
-    posts.value = await $fetch('/api/frontend/posts',{
-      headers: {
-        'Authentication-Token': loginResponse.value?.tokenRenewUrl || ""
-      }
-    })
+    posts.value = await $fetch('/api/frontend/posts')
   } catch (error) {
     const e = error as NuxtError
     throw createError({ statusCode: e.statusCode, statusMessage: e.message,fatal:true })
@@ -68,11 +76,7 @@ async function handlePosts(){
 
 async function handleComments(){
   try {
-    comments.value = await $fetch('/api/frontend/comments',{
-      headers: {
-        'Authentication-Token': loginResponse.value?.tokenRenewUrl || ""
-      }
-    })
+    comments.value = await $fetch('/api/frontend/comments')
   } catch (error) {
     const e = error as NuxtError
     throw createError({ statusCode: e.statusCode, statusMessage: e.message,fatal:true })
@@ -83,11 +87,15 @@ async function handleComments(){
 <template>
   <div>
     <h1>Auth</h1>
-    <button @click="handleRegister">Register</button>
-    <p>{{registerResponse}}</p>
-    <button @click="handleLogin">Login</button>
-    <p>{{loginResponse}}</p>
-    <p>token = {{loginResponse?.tokenRenewUrl}}</p>
+    <div class="auth">
+      <button @click="handleRegister">Register</button>
+      <p>{{registerResponse}}</p>
+      <button @click="handleLogin">Login</button>
+      <p>{{loginResponse}}</p>
+      <button @click="handleLogout">Log out</button>
+      <p>{{logoutResponse}}</p>
+    </div>
+
     <button @click="handlePosts">Posts</button>
     <p>{{posts}}</p>
     <button @click="handleComments">Comments</button>
@@ -97,5 +105,8 @@ async function handleComments(){
 
 
 <style scoped>
-
+.auth{
+  display: flex;
+  padding:20px;
+}
 </style>

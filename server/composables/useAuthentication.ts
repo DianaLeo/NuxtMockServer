@@ -5,7 +5,6 @@ import type {
     FrontendRegistration,
 } from "~/types"
 import {hashPassword, verifyPassword} from "~/server/utils/password"
-import {generateToken} from "~/server/utils/jwt"
 
 export const useAuthentication = () => {
     const findUserByEmail = async (email:string):Promise<CustomerData& {id:string} | undefined> => {
@@ -41,7 +40,7 @@ export const useAuthentication = () => {
         return "Placeholder"
     }
 
-    const toCustomerData = (registerBody:FrontendRegistration,token:string):CustomerData => {
+    const toCustomerData = (registerBody:FrontendRegistration):CustomerData => {
         return {
             freeBets: [],
             address: registerBody.account.address,
@@ -74,7 +73,7 @@ export const useAuthentication = () => {
                     vaultBalance: 0
                 }
             ],
-            tokenRenewUrl: token,
+            tokenRenewUrl: "",
             currency: registerBody.account.currencyCode,
             mfaLogin: false,
             mfaWithdrawal: null,
@@ -131,8 +130,7 @@ export const useAuthentication = () => {
         let newUser:CustomerData & {id:string}
 
         registerBody.account.password = await hashPassword(registerBody.account.password)
-        const token = generateToken({id:registerBody.account.email})
-        const transformedBody = toCustomerData(registerBody,token)
+        const transformedBody = toCustomerData(registerBody)
 
         try {
             newUser = await $fetch('http://localhost:8080/users',{
